@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Zelt-Pay-Calculator/static/css/main.d128202d.css",
-    "main.js": "/Zelt-Pay-Calculator/static/js/main.feccaf70.js",
+    "main.js": "/Zelt-Pay-Calculator/static/js/main.8e31884c.js",
     "static/js/787.ce93701c.chunk.js": "/Zelt-Pay-Calculator/static/js/787.ce93701c.chunk.js",
     "index.html": "/Zelt-Pay-Calculator/index.html",
     "main.d128202d.css.map": "/Zelt-Pay-Calculator/static/css/main.d128202d.css.map",
-    "main.feccaf70.js.map": "/Zelt-Pay-Calculator/static/js/main.feccaf70.js.map",
+    "main.8e31884c.js.map": "/Zelt-Pay-Calculator/static/js/main.8e31884c.js.map",
     "787.ce93701c.chunk.js.map": "/Zelt-Pay-Calculator/static/js/787.ce93701c.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d128202d.css",
-    "static/js/main.feccaf70.js"
+    "static/js/main.8e31884c.js"
   ]
 }
