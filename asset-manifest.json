@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Zelt-Allowance-Calculator/static/css/main.d128202d.css",
-    "main.js": "/Zelt-Allowance-Calculator/static/js/main.1aab4673.js",
+    "main.js": "/Zelt-Allowance-Calculator/static/js/main.af31c33b.js",
     "static/js/787.ce93701c.chunk.js": "/Zelt-Allowance-Calculator/static/js/787.ce93701c.chunk.js",
     "index.html": "/Zelt-Allowance-Calculator/index.html",
     "main.d128202d.css.map": "/Zelt-Allowance-Calculator/static/css/main.d128202d.css.map",
-    "main.1aab4673.js.map": "/Zelt-Allowance-Calculator/static/js/main.1aab4673.js.map",
+    "main.af31c33b.js.map": "/Zelt-Allowance-Calculator/static/js/main.af31c33b.js.map",
     "787.ce93701c.chunk.js.map": "/Zelt-Allowance-Calculator/static/js/787.ce93701c.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d128202d.css",
-    "static/js/main.1aab4673.js"
+    "static/js/main.af31c33b.js"
   ]
 }
