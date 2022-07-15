@@ -475,14 +475,15 @@ const calculateAccruedHolidays = (
 
   const nBankHolidays = calculateNumberOfBankHolidays(start, end, jurisdiction);
 
-  return (
+  return Math.max(
     roundUpAll(
       (daysWorkedToDate / (365 + leap(start))) * annualHolidayAllowance +
         carryOver,
       1
     ) -
-    holidayTaken +
-    (bankHolidaysIncluded ? 0 : nBankHolidays)
+      holidayTaken +
+      (bankHolidaysIncluded ? 0 : nBankHolidays),
+    0
   );
 };
 
