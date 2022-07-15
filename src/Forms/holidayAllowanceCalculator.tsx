@@ -1,5 +1,4 @@
-import { val } from "cheerio/lib/api/attributes";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
   englandBkHol,
@@ -29,23 +28,10 @@ export const AllowanceForm = (): JSX.Element => {
   >();
   const [holidayTaken, setHolidayTaken] = useState<number | undefined>();
   const [totHolidays, setTotHolidays] = useState<number | undefined>(0);
-  const [totAnnAllowance, setTotAnnAllowance] = useState<number>();
-  const [totCarryOver, setTotCarryOver] = useState<number | undefined>();
+
   const [totAccrued, setTotAccrued] = useState<number | undefined>();
   const [totPayout, setTotPayout] = useState<number | string>();
   const [isComplete, setIsComplete] = useState<boolean>(false);
-
-  // useEffect(() => {
-  //   if (daysWorkedPerWeek !== undefined)
-  //     setTotAnnAllowance(calculateAnnualHolidaysAllowance(daysWorkedPerWeek));
-
-  //   if (daysWorkedPerWeek !== undefined)
-  //     setTotAnnAllowance(calculateAnnualHolidaysAllowance(daysWorkedPerWeek));
-  //   if (totAnnAllowance) {
-  //     const carryOver = calculateAnnualCarryOver(totAnnAllowance, 8);
-  //     setTotCarryOver(carryOver);
-  //   }
-  // }, [daysWorkedPerWeek, totAnnAllowance]);
 
   return (
     <form
@@ -360,10 +346,7 @@ export const AllowanceForm = (): JSX.Element => {
                     holidayTaken
                   )
                 );
-                const tAnnAll =
-                  calculateAnnualHolidaysAllowance(daysWorkedPerWeek);
-                setTotAnnAllowance(tAnnAll);
-                setTotCarryOver(calculateAnnualCarryOver(tAnnAll as number, 8));
+
                 const totAccruedRes = calculateAccruedHolidays(
                   contractHolidayStartPer,
                   ed,
