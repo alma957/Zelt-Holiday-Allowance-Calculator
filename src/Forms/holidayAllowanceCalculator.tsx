@@ -300,7 +300,7 @@ export const AllowanceForm = (): JSX.Element => {
                 holidayTaken !== undefined
               ) {
                 const sdSplit = startDate.split("-").map((el) => parseInt(el));
-                const sd = new Date(sdSplit[0], sdSplit[1], sdSplit[2]);
+                const sd = new Date(sdSplit[0], sdSplit[1] - 1, sdSplit[2]);
                 const edSplit = endDate.split("-").map((el) => parseInt(el));
 
                 const ed = new Date(
@@ -310,7 +310,7 @@ export const AllowanceForm = (): JSX.Element => {
                 ).getTime();
 
                 const contractHolidayStartPeriodSplit = startPeriodSpecified
-                  ? currentHolidayPeriodStartDate
+                  ? currentHolidayPeriodStartDate!
                       .split("-")
                       .map((el) => parseInt(el))
                   : null;
@@ -329,6 +329,7 @@ export const AllowanceForm = (): JSX.Element => {
                     sd.getTime() as number
                   )
                 ).getTime();
+
                 if (ed - sd.getTime() < 0) {
                   alert(
                     "Termination date cannot be before start of employment"
@@ -338,14 +339,16 @@ export const AllowanceForm = (): JSX.Element => {
                   alert(
                     "Termination date cannot be before current holiday period start date"
                   );
+                  return;
                 }
-                let diffPeriod = ed - contractHolidayStartPer;
-                while (
-                  diffPeriod >
-                  1000 * 24 * 3600 * (365 + leap(contractHolidayStartPer))
-                ) {
-                  contractHolidayStartPer += 1000 * 24 * 3600 * 365;
-                  diffPeriod -= 1000 * 24 * 3600 * 365;
+                const dayMill = 1000 * 24 * 3600;
+
+                let diff = ed - contractHolidayStartPer + dayMill;
+
+                while (diff > dayMill * (365 + leap(contractHolidayStartPer))) {
+                  contractHolidayStartPer +=
+                    dayMill * (365 + leap(contractHolidayStartPer));
+                  diff -= dayMill * (365 + leap(contractHolidayStartPer));
                 }
 
                 setTotHolidays(
@@ -357,12 +360,10 @@ export const AllowanceForm = (): JSX.Element => {
                     holidayTaken
                   )
                 );
-                setTotAnnAllowance(
-                  calculateAnnualHolidaysAllowance(daysWorkedPerWeek)
-                );
-                setTotCarryOver(
-                  calculateAnnualCarryOver(totAnnAllowance as number, 8)
-                );
+                const tAnnAll =
+                  calculateAnnualHolidaysAllowance(daysWorkedPerWeek);
+                setTotAnnAllowance(tAnnAll);
+                setTotCarryOver(calculateAnnualCarryOver(tAnnAll as number, 8));
                 const totAccruedRes = calculateAccruedHolidays(
                   contractHolidayStartPer,
                   ed,
@@ -436,10 +437,21 @@ export const calculateAnnualCarryOver = (
   return roundUpAll(Math.min(maxCarry, (1.6 / 5.6) * allowance), 1);
 };
 export const leap = (start: number): number => {
-  const startYear = new Date(start).getFullYear();
+  const startDate = new Date(start);
+
+  const startYear = startDate.getFullYear();
+  const startMonth = startDate.getMonth();
+  const startDay = startDate.getDate();
+  let subLeap = 0;
+
+  if (leapYear(startYear) && startMonth == 1 && startDay === 29) {
+    subLeap = 1;
+  }
 
   const startYearLeap = leapYear(startYear);
-  const endYear = new Date(start + 365 * 1000 * 24 * 3600).getFullYear();
+  const endYearMill = new Date(start + 365 * 1000 * 24 * 3600);
+
+  const endYear = endYearMill.getFullYear();
   const endYearLeap = leapYear(endYear);
   let l: any = undefined;
   if (startYearLeap) {
@@ -449,7 +461,9 @@ export const leap = (start: number): number => {
   }
   if (l === undefined) return 0;
 
-  if (l > start && l < start + 3600 * 1000 * 24 * 366) return 1;
+  if (l >= start && l <= start + 3600 * 1000 * 24 * (365 + subLeap)) {
+    return 1;
+  }
   return 0;
 };
 const leapYear = (year: number) => {
@@ -531,6 +545,7 @@ const calculatePayout = (
 
 export const roundUpAll = (original: number, precision: number) => {
   const value = original.toFixed(2);
+
   const digits = value.split(".")[1];
   let rounded: number | undefined = undefined;
 

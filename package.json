@@ -1,8 +1,8 @@
 {
-  "name": "allowance-calculator",
+  "name": "holiday-allowance-calculator",
   "version": "0.1.1",
   "private": true,
-  "homepage": "https://alma957.github.io/Zelt-Allowance-Calculator",
+  "homepage": "https://alma957.github.io/Zelt-Holiday-Allowance-Calculator",
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
