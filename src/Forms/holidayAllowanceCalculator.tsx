@@ -7,8 +7,11 @@ import {
   salaryBpMap,
 } from "./variables";
 export const AllowanceForm = (): JSX.Element => {
-  const [startDate, setStartDate] = useState<string | undefined>();
-  const [endDate, setEndDate] = useState<string | undefined>();
+  const defDate = new Date(new Date().getFullYear(), 0, 1)
+    .toISOString()
+    .substring(0, 10);
+  const [startDate, setStartDate] = useState<string>(defDate);
+  const [endDate, setEndDate] = useState<string>(defDate);
   const [salary, setGrossSalary] = useState<number | undefined>();
   const [salaryBasis, setSalaryBasis] = useState<string>("Annually");
   const [daysWorkedPerWeek, setDaysWorkedPerWeek] = useState<
