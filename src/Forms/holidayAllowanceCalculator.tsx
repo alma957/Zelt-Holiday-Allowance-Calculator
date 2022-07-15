@@ -109,7 +109,7 @@ export const AllowanceForm = (): JSX.Element => {
           Days Worked per Week *
           <input
             type="number"
-            min="1"
+            min="0.1"
             max="7"
             step="any"
             value={daysWorkedPerWeek}
