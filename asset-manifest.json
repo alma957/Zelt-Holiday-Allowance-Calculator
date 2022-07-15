@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Zelt-Allowance-Calculator/static/css/main.d128202d.css",
-    "main.js": "/Zelt-Allowance-Calculator/static/js/main.af31c33b.js",
-    "static/js/787.ce93701c.chunk.js": "/Zelt-Allowance-Calculator/static/js/787.ce93701c.chunk.js",
-    "index.html": "/Zelt-Allowance-Calculator/index.html",
-    "main.d128202d.css.map": "/Zelt-Allowance-Calculator/static/css/main.d128202d.css.map",
-    "main.af31c33b.js.map": "/Zelt-Allowance-Calculator/static/js/main.af31c33b.js.map",
-    "787.ce93701c.chunk.js.map": "/Zelt-Allowance-Calculator/static/js/787.ce93701c.chunk.js.map"
+    "main.css": "/Zelt-Holiday-Allowance-Calculator/static/css/main.2c2a969e.css",
+    "main.js": "/Zelt-Holiday-Allowance-Calculator/static/js/main.adae6dbf.js",
+    "static/js/787.70837fb6.chunk.js": "/Zelt-Holiday-Allowance-Calculator/static/js/787.70837fb6.chunk.js",
+    "index.html": "/Zelt-Holiday-Allowance-Calculator/index.html",
+    "main.2c2a969e.css.map": "/Zelt-Holiday-Allowance-Calculator/static/css/main.2c2a969e.css.map",
+    "main.adae6dbf.js.map": "/Zelt-Holiday-Allowance-Calculator/static/js/main.adae6dbf.js.map",
+    "787.70837fb6.chunk.js.map": "/Zelt-Holiday-Allowance-Calculator/static/js/787.70837fb6.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d128202d.css",
-    "static/js/main.af31c33b.js"
+    "static/css/main.2c2a969e.css",
+    "static/js/main.adae6dbf.js"
   ]
 }
