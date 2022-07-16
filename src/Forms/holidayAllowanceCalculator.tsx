@@ -18,9 +18,9 @@ export const AllowanceForm = (): JSX.Element => {
     number | undefined
   >();
   const [startPeriodSpecified, setStartPeriodSpecified] =
-    useState<boolean>(false);
+    useState<boolean>(true);
   const [currentHolidayPeriodStartDate, setcurrentHolidayPeriodStartDate] =
-    useState<string>("");
+    useState<string>(defDate);
   const [jurisdiction, setJurisdiction] = useState<string>("England & Wales");
   const [annualHolidaysAllowance, setAnnualyHolidaysAllowance] = useState<
     number | undefined
@@ -31,6 +31,9 @@ export const AllowanceForm = (): JSX.Element => {
   >();
   const [holidayTaken, setHolidayTaken] = useState<number | undefined>();
   const [totHolidays, setTotHolidays] = useState<number | undefined>(0);
+  const [bankHolidaysDuringPeriod, setBankHolidaysDuringPeriod] =
+    useState<number>(0);
+  const [accruedThisYear, setAccruedThisYear] = useState<number>(0);
 
   const [totAccrued, setTotAccrued] = useState<number | undefined>();
   const [totPayout, setTotPayout] = useState<number | string>();
@@ -155,7 +158,7 @@ export const AllowanceForm = (): JSX.Element => {
         </label>
       </p>
       <p>
-        <label>
+        <label style={{ display: startPeriodSpecified ? "inline" : "none" }}>
           Current Holiday Period Start Date (leave blank if not in contract)
           <input
             type="date"
@@ -183,8 +186,7 @@ export const AllowanceForm = (): JSX.Element => {
       <h2>Employee Holiday Balance (Termination Year)</h2>
       <p>
         <label>
-          Input Employee's Annual Holiday Allowance for Current Cycle (Excluding
-          Carry Overs) *
+          Annual Holiday Allowance *
           <input
             type="number"
             step="any"
@@ -235,7 +237,7 @@ export const AllowanceForm = (): JSX.Element => {
       </p>
       <p>
         <label>
-          Employee's Holidays Carried Over From Previous Cycle *
+          Remaining Carry Over Days *
           <input
             type="number"
             min="0"
@@ -253,8 +255,7 @@ export const AllowanceForm = (): JSX.Element => {
       </p>
       <p>
         <label>
-          Employee's Holidays Taken in Current Cycle (up to the termination date
-          and excluding bank holidays) *
+          Holidays Taken This Year *
           <input
             type="number"
             min="0"
@@ -349,7 +350,12 @@ export const AllowanceForm = (): JSX.Element => {
                     holidayTaken
                   )
                 );
-
+                const totBankHolidays = calculateNumberOfBankHolidays(
+                  contractHolidayStartPer,
+                  ed,
+                  jurisdiction
+                );
+                setBankHolidaysDuringPeriod(totBankHolidays);
                 const totAccruedRes = calculateAccruedHolidays(
                   contractHolidayStartPer,
                   ed,
@@ -359,8 +365,13 @@ export const AllowanceForm = (): JSX.Element => {
                   jurisdiction,
                   holidayCarryOver
                 );
-                setTotAccrued(totAccruedRes);
+                const accruedThisYear = roundUpAll(
+                  totAccruedRes - holidayCarryOver,
+                  1
+                );
 
+                setTotAccrued(totAccruedRes);
+                setAccruedThisYear(accruedThisYear);
                 setTotPayout(
                   calculatePayout(
                     salary,
@@ -384,6 +395,7 @@ export const AllowanceForm = (): JSX.Element => {
             visibility: isComplete ? "visible" : "hidden",
           }}
         >
+          <p>Holidays Accrued This Year: {accruedThisYear}</p>
           <p>Total Holidays Taken: {totHolidays}</p>
           <p>
             Accrued Holidays Remaining:{" "}
@@ -391,6 +403,8 @@ export const AllowanceForm = (): JSX.Element => {
               ? null
               : parseFloat((totAccrued as number).toFixed(5))}
           </p>
+          <p>Bank Holidays During Period: {bankHolidaysDuringPeriod}</p>
+
           <p>Employee Payout: {totPayout} </p>
         </div>
       </div>
@@ -478,15 +492,14 @@ const calculateAccruedHolidays = (
 
   const nBankHolidays = calculateNumberOfBankHolidays(start, end, jurisdiction);
 
-  return Math.max(
+  return (
     roundUpAll(
       (daysWorkedToDate / (365 + leap(start))) * annualHolidayAllowance +
         carryOver,
       1
     ) -
-      holidayTaken +
-      (bankHolidaysIncluded ? 0 : nBankHolidays),
-    0
+    holidayTaken +
+    (bankHolidaysIncluded ? 0 : nBankHolidays)
   );
 };
 
@@ -538,7 +551,7 @@ export const roundUpAll = (original: number, precision: number) => {
 
   const sDigits = digits[1];
   if (sDigits === "0") {
-    return original;
+    return parseFloat(original.toFixed(1));
   } else if (digits[0] === "9") {
     return Math.round(parseFloat(value));
   } else {
