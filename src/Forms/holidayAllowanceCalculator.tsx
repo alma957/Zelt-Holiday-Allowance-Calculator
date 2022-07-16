@@ -395,17 +395,25 @@ export const AllowanceForm = (): JSX.Element => {
             visibility: isComplete ? "visible" : "hidden",
           }}
         >
-          <p>Holidays Accrued This Year: {accruedThisYear}</p>
-          <p>Total Holidays Taken: {totHolidays}</p>
+          <p>
+            Holidays Accrued This Year: <b>{accruedThisYear}</b>
+          </p>
+          <p>
+            Bank Holidays During Period: <b>{bankHolidaysDuringPeriod}</b>
+          </p>
+          <p>
+            Total Holidays Taken: <b>{totHolidays}</b>
+          </p>
           <p>
             Accrued Holidays Remaining:{" "}
             {totAccrued === undefined
               ? null
               : parseFloat((totAccrued as number).toFixed(5))}
           </p>
-          <p>Bank Holidays During Period: {bankHolidaysDuringPeriod}</p>
 
-          <p>Employee Payout: {totPayout} </p>
+          <p>
+            Employee Payout:<b>{totPayout}</b>{" "}
+          </p>
         </div>
       </div>
     </form>
