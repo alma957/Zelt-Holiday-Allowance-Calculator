@@ -406,9 +406,11 @@ export const AllowanceForm = (): JSX.Element => {
           </p>
           <p>
             Accrued Holidays Remaining:{" "}
-            {totAccrued === undefined
-              ? null
-              : parseFloat((totAccrued as number).toFixed(5))}
+            <b>
+              {totAccrued === undefined
+                ? null
+                : parseFloat((totAccrued as number).toFixed(5))}
+            </b>
           </p>
 
           <p>
