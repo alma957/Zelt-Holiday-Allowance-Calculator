@@ -305,19 +305,17 @@ export const AllowanceForm = (): JSX.Element => {
                       .map((el) => parseInt(el))
                   : null;
 
-                const contractHolidayStartPerCheck =
-                  contractHolidayStartPeriodSplit
-                    ? new Date(
-                        contractHolidayStartPeriodSplit[0],
-                        contractHolidayStartPeriodSplit[1] - 1,
-                        contractHolidayStartPeriodSplit[2]
-                      )
-                    : sd;
                 let contractHolidayStartPer = new Date(
-                  Math.max(
-                    contractHolidayStartPerCheck.getTime() as number,
-                    sd.getTime() as number
-                  )
+                  contractHolidayStartPeriodSplit && startPeriodSpecified
+                    ? Math.max(
+                        new Date(
+                          contractHolidayStartPeriodSplit[0],
+                          contractHolidayStartPeriodSplit[1] - 1,
+                          contractHolidayStartPeriodSplit[2]
+                        ).getTime(),
+                        sd.getTime()
+                      )
+                    : sd.getTime()
                 ).getTime();
 
                 if (ed - sd.getTime() < 0) {
