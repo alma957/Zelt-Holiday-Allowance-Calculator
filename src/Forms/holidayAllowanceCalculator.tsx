@@ -255,7 +255,7 @@ export const AllowanceForm = (): JSX.Element => {
       </p>
       <p>
         <label>
-          Holidays Taken This Year *
+          Holidays taken this year (excluding Bank Holidays) *
           <input
             type="number"
             min="0"
@@ -364,7 +364,10 @@ export const AllowanceForm = (): JSX.Element => {
                   holidayCarryOver
                 );
                 const accruedThisYear = roundUpAll(
-                  totAccruedRes - holidayCarryOver,
+                  totAccruedRes -
+                    holidayCarryOver +
+                    holidayTaken +
+                    totBankHolidays,
                   1
                 );
 
@@ -500,12 +503,13 @@ const calculateAccruedHolidays = (
 
   return (
     roundUpAll(
-      (daysWorkedToDate / (365 + leap(start))) * annualHolidayAllowance +
+      (daysWorkedToDate / (365 + leap(start))) *
+        (annualHolidayAllowance + (bankHolidaysIncluded ? 0 : nBankHolidays)) +
         carryOver,
       1
     ) -
-    holidayTaken +
-    (bankHolidaysIncluded ? 0 : nBankHolidays)
+    holidayTaken -
+    nBankHolidays
   );
 };
 
