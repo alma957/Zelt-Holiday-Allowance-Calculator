@@ -52,7 +52,7 @@ export const AllowanceForm = (): JSX.Element => {
       </div>
       <p>
         <label>
-          Employment Start Date *{" "}
+          Employment start date *{" "}
           <input
             type="date"
             value={startDate}
@@ -63,7 +63,7 @@ export const AllowanceForm = (): JSX.Element => {
       </p>
       <p>
         <label>
-          Employment Termination Date *
+          Employment termination date *
           <input
             type="date"
             value={endDate}
@@ -112,7 +112,7 @@ export const AllowanceForm = (): JSX.Element => {
       </p>
       <p>
         <label>
-          Days Worked per Week *
+          Days worked per week *
           <input
             type="number"
             min="0.1"
@@ -124,7 +124,7 @@ export const AllowanceForm = (): JSX.Element => {
           />
         </label>
       </p>
-      <legend>Holiday Period Start Date Specified in Contract *</legend>
+      <legend>Holiday period start date specified in contract *</legend>
       <p>
         <label className="choice">
           {" "}
@@ -159,7 +159,7 @@ export const AllowanceForm = (): JSX.Element => {
       </p>
       <p>
         <label style={{ display: startPeriodSpecified ? "inline" : "none" }}>
-          Current Holiday Period Start Date (leave blank if not in contract)
+          Current holiday period start date (leave blank if not in contract)
           <input
             type="date"
             value={currentHolidayPeriodStartDate}
@@ -186,7 +186,7 @@ export const AllowanceForm = (): JSX.Element => {
       <h2>Employee Holiday Balance (Termination Year)</h2>
       <p>
         <label>
-          Annual Holiday Allowance *
+          Annual holiday allowance *
           <input
             type="number"
             step="any"
@@ -202,7 +202,7 @@ export const AllowanceForm = (): JSX.Element => {
           />
         </label>
       </p>
-      <legend>Does Allowance Include Bank Holidays ? *</legend>
+      <legend>Does allowance include Bank Holidays ? *</legend>
       <p>
         <label className="choice">
           {" "}
@@ -237,7 +237,7 @@ export const AllowanceForm = (): JSX.Element => {
       </p>
       <p>
         <label>
-          Remaining Carry Over Days *
+          Carry over from last year *
           <input
             type="number"
             min="0"
@@ -394,16 +394,16 @@ export const AllowanceForm = (): JSX.Element => {
           }}
         >
           <p>
-            Holidays Accrued This Year: <b>{accruedThisYear}</b>
+            Holidays accrued this year: <b>{accruedThisYear}</b>
           </p>
           <p>
-            Bank Holidays During Period: <b>{bankHolidaysDuringPeriod}</b>
+            Bank holidays during period: <b>{bankHolidaysDuringPeriod}</b>
           </p>
           <p>
-            Total Holidays Taken: <b>{totHolidays}</b>
+            Total holidays taken: <b>{totHolidays}</b>
           </p>
           <p>
-            Accrued Holidays Remaining:{" "}
+            Accrued holidays remaining:{" "}
             <b>
               {totAccrued === undefined
                 ? null
@@ -428,9 +428,7 @@ const calculateTotalHolidays = (
 ): number => {
   return (
     holidaysTaken +
-    (bankHolsIncl
-      ? 0
-      : calculateNumberOfBankHolidays(startDate, endDate, jurisdiction))
+    calculateNumberOfBankHolidays(startDate, endDate, jurisdiction)
   );
 };
 export const calculateAnnualHolidaysAllowance = (
