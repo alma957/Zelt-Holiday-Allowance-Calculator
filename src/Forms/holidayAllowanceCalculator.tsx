@@ -11,7 +11,9 @@ export const AllowanceForm = (): JSX.Element => {
     .toISOString()
     .substring(0, 10);
   const [startDate, setStartDate] = useState<string>(defDate);
-  const [endDate, setEndDate] = useState<string>(defDate);
+  const [endDate, setEndDate] = useState<string>(
+    new Date().toISOString().substring(0, 10)
+  );
   const [salary, setGrossSalary] = useState<number | undefined>();
   const [salaryBasis, setSalaryBasis] = useState<string>("Annually");
   const [daysWorkedPerWeek, setDaysWorkedPerWeek] = useState<
@@ -40,386 +42,394 @@ export const AllowanceForm = (): JSX.Element => {
   const [isComplete, setIsComplete] = useState<boolean>(false);
 
   return (
-    <form
-      className="myForm"
-      id="form"
-      onSubmit={(e) => {
-        e.preventDefault();
-      }}
-    >
-      <div className="flex-container">
-        <h2>Employment Details</h2>
-      </div>
-      <p>
-        <label>
-          Employment start date *{" "}
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            required
-          />
-        </label>
-      </p>
-      <p>
-        <label>
-          Employment termination date *
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            required
-          />
-        </label>
-      </p>
-      <p>
-        <label>
-          Gross Salary *
-          <input
-            type="number"
-            min="0"
-            value={salary}
-            step="any"
-            onChange={(e) => {
-              if (parseFloat(e.target.value) < 0) {
-                setGrossSalary(0);
-              } else {
-                setGrossSalary(parseFloat(e.target.value));
+    <div>
+      <form
+        className="myForm"
+        id="form"
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
+        <div className="flex-container">
+          <h2>Employment Details</h2>
+        </div>
+        <p>
+          <label>
+            Employment start date *{" "}
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              required
+            />
+          </label>
+        </p>
+        <p>
+          <label>
+            Employment termination date *
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              required
+            />
+          </label>
+        </p>
+        <p>
+          <label>
+            Gross Salary *
+            <input
+              type="number"
+              min="0"
+              value={salary}
+              step="any"
+              onChange={(e) => {
+                if (parseFloat(e.target.value) < 0) {
+                  setGrossSalary(0);
+                } else {
+                  setGrossSalary(parseFloat(e.target.value));
+                }
+              }}
+              required
+            />
+          </label>
+        </p>
+        <p>
+          <label>
+            Salary Basis *
+            <select
+              value={salaryBasis}
+              onChange={(e) => {
+                setSalaryBasis(e.target.value);
+              }}
+              //defaultValue={"Annually"}
+
+              required
+            >
+              <option value="Annually">Annually</option>
+              <option value="Monthly">Monthly</option>
+              <option value="Weekly">Weekly</option>
+              <option value="Daily">Daily</option>
+            </select>
+          </label>
+        </p>
+        <p>
+          <label>
+            Days worked per week *
+            <input
+              type="number"
+              min="0.1"
+              max="7"
+              step="any"
+              value={daysWorkedPerWeek}
+              required
+              onChange={(e) => setDaysWorkedPerWeek(parseFloat(e.target.value))}
+            />
+          </label>
+        </p>
+        <legend>Holiday period start date specified in contract *</legend>
+        <p>
+          <label className="choice">
+            {" "}
+            <input
+              type="radio"
+              checked={startPeriodSpecified}
+              onChange={(e) =>
+                e.target.checked
+                  ? setStartPeriodSpecified(true)
+                  : setStartPeriodSpecified(false)
               }
-            }}
-            required
-          />
-        </label>
-      </p>
-      <p>
-        <label>
-          Salary Basis *
-          <select
-            value={salaryBasis}
-            onChange={(e) => {
-              setSalaryBasis(e.target.value);
-            }}
-            //defaultValue={"Annually"}
+              required
+            />{" "}
+            Yes{" "}
+          </label>
+        </p>
+        <p>
+          <label className="choice">
+            {" "}
+            <input
+              type="radio"
+              checked={!startPeriodSpecified}
+              onChange={(e) =>
+                e.target.checked
+                  ? setStartPeriodSpecified(false)
+                  : setStartPeriodSpecified(true)
+              }
+              required
+            />{" "}
+            No{" "}
+          </label>
+        </p>
+        <p>
+          <label style={{ display: startPeriodSpecified ? "inline" : "none" }}>
+            Holiday year start
+            <input
+              type="date"
+              value={currentHolidayPeriodStartDate}
+              required={startPeriodSpecified ? true : false}
+              onChange={(e) => setcurrentHolidayPeriodStartDate(e.target.value)}
+            />
+          </label>
+        </p>
+        <p>
+          <label>
+            Jurisdiction *
+            <select
+              value={jurisdiction}
+              onChange={(e) => setJurisdiction(e.target.value)}
+              required
+              defaultValue={"England & Wales"}
+            >
+              <option value="England & Wales">England & Wales</option>
+              <option value="Scotland">Scotland</option>
+              <option value="Northern Ireland">Northern Ireland</option>
+            </select>
+          </label>
+        </p>
+        <h2>Employee Holiday Balance (Termination Year)</h2>
+        <p>
+          <label>
+            Annual holiday allowance *
+            <input
+              type="number"
+              step="any"
+              min="0"
+              value={annualHolidaysAllowance}
+              onChange={(e) =>
+                parseFloat(e.target.value) < 0
+                  ? ""
+                  : setAnnualyHolidaysAllowance(parseFloat(e.target.value))
+              }
+              required
+              // oninput="validity.valid||(value='');"
+            />
+          </label>
+        </p>
+        <legend>Does allowance include Bank Holidays ? *</legend>
+        <p>
+          <label className="choice">
+            {" "}
+            <input
+              type="radio"
+              checked={incBankHolidays}
+              onChange={(e) => {
+                e.target.checked
+                  ? setIncBankHolidays(true)
+                  : setIncBankHolidays(false);
+              }}
+              required
+            />{" "}
+            Yes{" "}
+          </label>
+        </p>
+        <p>
+          <label className="choice">
+            {" "}
+            <input
+              type="radio"
+              checked={!incBankHolidays}
+              onChange={(e) => {
+                e.target.checked
+                  ? setIncBankHolidays(false)
+                  : setIncBankHolidays(true);
+              }}
+              required
+            />{" "}
+            No{" "}
+          </label>
+        </p>
+        <p>
+          <label>
+            Carry over from last year *
+            <input
+              type="number"
+              min="0"
+              step="any"
+              value={holidayCarryOver}
+              onChange={(e) =>
+                parseFloat(e.target.value) < 0
+                  ? setHolidayCarryOver(0)
+                  : setHolidayCarryOver(parseFloat(e.target.value))
+              }
+              required
+              // oninput="validity.valid||(value='');"
+            />
+          </label>
+        </p>
+        <p>
+          <label>
+            Holidays taken this year (excluding Bank Holidays) *
+            <input
+              type="number"
+              min="0"
+              value={holidayTaken}
+              step="any"
+              onChange={(e) =>
+                parseFloat(e.target.value) < 0
+                  ? setHolidayTaken(0)
+                  : setHolidayTaken(parseFloat(e.target.value))
+              }
+              required
+              // oninput="validity.valid||(value='');"
+            />
+          </label>
+        </p>
+        <div className="flex-container">
+          <div>
+            <button
+              id="button"
+              onClick={() => {
+                if (
+                  startDate !== undefined &&
+                  endDate !== undefined &&
+                  salary !== undefined &&
+                  salaryBasis !== undefined &&
+                  daysWorkedPerWeek !== undefined &&
+                  startPeriodSpecified !== undefined &&
+                  jurisdiction !== undefined &&
+                  annualHolidaysAllowance !== undefined &&
+                  incBankHolidays !== undefined &&
+                  holidayCarryOver !== undefined &&
+                  holidayTaken !== undefined
+                ) {
+                  const sdSplit = startDate
+                    .split("-")
+                    .map((el) => parseInt(el));
+                  const sd = new Date(sdSplit[0], sdSplit[1] - 1, sdSplit[2]);
+                  const edSplit = endDate.split("-").map((el) => parseInt(el));
 
-            required
-          >
-            <option value="Annually">Annually</option>
-            <option value="Monthly">Monthly</option>
-            <option value="Weekly">Weekly</option>
-            <option value="Daily">Daily</option>
-          </select>
-        </label>
-      </p>
-      <p>
-        <label>
-          Days worked per week *
-          <input
-            type="number"
-            min="0.1"
-            max="7"
-            step="any"
-            value={daysWorkedPerWeek}
-            required
-            onChange={(e) => setDaysWorkedPerWeek(parseFloat(e.target.value))}
-          />
-        </label>
-      </p>
-      <legend>Holiday period start date specified in contract *</legend>
-      <p>
-        <label className="choice">
-          {" "}
-          <input
-            type="radio"
-            checked={startPeriodSpecified}
-            onChange={(e) =>
-              e.target.checked
-                ? setStartPeriodSpecified(true)
-                : setStartPeriodSpecified(false)
-            }
-            required
-          />{" "}
-          Yes{" "}
-        </label>
-      </p>
-      <p>
-        <label className="choice">
-          {" "}
-          <input
-            type="radio"
-            checked={!startPeriodSpecified}
-            onChange={(e) =>
-              e.target.checked
-                ? setStartPeriodSpecified(false)
-                : setStartPeriodSpecified(true)
-            }
-            required
-          />{" "}
-          No{" "}
-        </label>
-      </p>
-      <p>
-        <label style={{ display: startPeriodSpecified ? "inline" : "none" }}>
-          Current holiday period start date (leave blank if not in contract)
-          <input
-            type="date"
-            value={currentHolidayPeriodStartDate}
-            required={startPeriodSpecified ? true : false}
-            onChange={(e) => setcurrentHolidayPeriodStartDate(e.target.value)}
-          />
-        </label>
-      </p>
-      <p>
-        <label>
-          Jurisdiction *
-          <select
-            value={jurisdiction}
-            onChange={(e) => setJurisdiction(e.target.value)}
-            required
-            defaultValue={"England & Wales"}
-          >
-            <option value="England & Wales">England & Wales</option>
-            <option value="Scotland">Scotland</option>
-            <option value="Northern Ireland">Northern Ireland</option>
-          </select>
-        </label>
-      </p>
-      <h2>Employee Holiday Balance (Termination Year)</h2>
-      <p>
-        <label>
-          Annual holiday allowance *
-          <input
-            type="number"
-            step="any"
-            min="0"
-            value={annualHolidaysAllowance}
-            onChange={(e) =>
-              parseFloat(e.target.value) < 0
-                ? ""
-                : setAnnualyHolidaysAllowance(parseFloat(e.target.value))
-            }
-            required
-            // oninput="validity.valid||(value='');"
-          />
-        </label>
-      </p>
-      <legend>Does allowance include Bank Holidays ? *</legend>
-      <p>
-        <label className="choice">
-          {" "}
-          <input
-            type="radio"
-            checked={incBankHolidays}
-            onChange={(e) => {
-              e.target.checked
-                ? setIncBankHolidays(true)
-                : setIncBankHolidays(false);
-            }}
-            required
-          />{" "}
-          Yes{" "}
-        </label>
-      </p>
-      <p>
-        <label className="choice">
-          {" "}
-          <input
-            type="radio"
-            checked={!incBankHolidays}
-            onChange={(e) => {
-              e.target.checked
-                ? setIncBankHolidays(false)
-                : setIncBankHolidays(true);
-            }}
-            required
-          />{" "}
-          No{" "}
-        </label>
-      </p>
-      <p>
-        <label>
-          Carry over from last year *
-          <input
-            type="number"
-            min="0"
-            step="any"
-            value={holidayCarryOver}
-            onChange={(e) =>
-              parseFloat(e.target.value) < 0
-                ? setHolidayCarryOver(0)
-                : setHolidayCarryOver(parseFloat(e.target.value))
-            }
-            required
-            // oninput="validity.valid||(value='');"
-          />
-        </label>
-      </p>
-      <p>
-        <label>
-          Holidays taken this year (excluding Bank Holidays) *
-          <input
-            type="number"
-            min="0"
-            value={holidayTaken}
-            step="any"
-            onChange={(e) =>
-              parseFloat(e.target.value) < 0
-                ? setHolidayTaken(0)
-                : setHolidayTaken(parseFloat(e.target.value))
-            }
-            required
-            // oninput="validity.valid||(value='');"
-          />
-        </label>
-      </p>
-      <div className="flex-container">
-        <div>
-          <button
-            id="button"
-            onClick={() => {
-              if (
-                startDate !== undefined &&
-                endDate !== undefined &&
-                salary !== undefined &&
-                salaryBasis !== undefined &&
-                daysWorkedPerWeek !== undefined &&
-                startPeriodSpecified !== undefined &&
-                jurisdiction !== undefined &&
-                annualHolidaysAllowance !== undefined &&
-                incBankHolidays !== undefined &&
-                holidayCarryOver !== undefined &&
-                holidayTaken !== undefined
-              ) {
-                const sdSplit = startDate.split("-").map((el) => parseInt(el));
-                const sd = new Date(sdSplit[0], sdSplit[1] - 1, sdSplit[2]);
-                const edSplit = endDate.split("-").map((el) => parseInt(el));
+                  const ed = new Date(
+                    edSplit[0],
+                    edSplit[1] - 1,
+                    edSplit[2]
+                  ).getTime();
 
-                const ed = new Date(
-                  edSplit[0],
-                  edSplit[1] - 1,
-                  edSplit[2]
-                ).getTime();
+                  const contractHolidayStartPeriodSplit = startPeriodSpecified
+                    ? currentHolidayPeriodStartDate!
+                        .split("-")
+                        .map((el) => parseInt(el))
+                    : null;
 
-                const contractHolidayStartPeriodSplit = startPeriodSpecified
-                  ? currentHolidayPeriodStartDate!
-                      .split("-")
-                      .map((el) => parseInt(el))
-                  : null;
+                  let contractHolidayStartPer = new Date(
+                    contractHolidayStartPeriodSplit && startPeriodSpecified
+                      ? Math.max(
+                          new Date(
+                            contractHolidayStartPeriodSplit[0],
+                            contractHolidayStartPeriodSplit[1] - 1,
+                            contractHolidayStartPeriodSplit[2]
+                          ).getTime(),
+                          sd.getTime()
+                        )
+                      : sd.getTime()
+                  ).getTime();
 
-                let contractHolidayStartPer = new Date(
-                  contractHolidayStartPeriodSplit && startPeriodSpecified
-                    ? Math.max(
-                        new Date(
-                          contractHolidayStartPeriodSplit[0],
-                          contractHolidayStartPeriodSplit[1] - 1,
-                          contractHolidayStartPeriodSplit[2]
-                        ).getTime(),
-                        sd.getTime()
-                      )
-                    : sd.getTime()
-                ).getTime();
+                  if (ed - sd.getTime() < 0) {
+                    alert(
+                      "Termination date cannot be before start of employment"
+                    );
+                    return;
+                  } else if (ed - contractHolidayStartPer < 0) {
+                    alert(
+                      "Termination date cannot be before current holiday period start date"
+                    );
+                    return;
+                  }
+                  const dayMill = 1000 * 24 * 3600;
 
-                if (ed - sd.getTime() < 0) {
-                  alert(
-                    "Termination date cannot be before start of employment"
+                  let diff = ed - contractHolidayStartPer + dayMill;
+
+                  while (
+                    diff >
+                    dayMill * (365 + leap(contractHolidayStartPer))
+                  ) {
+                    contractHolidayStartPer +=
+                      dayMill * (365 + leap(contractHolidayStartPer));
+                    diff -= dayMill * (365 + leap(contractHolidayStartPer));
+                  }
+
+                  setTotHolidays(
+                    calculateTotalHolidays(
+                      contractHolidayStartPer,
+                      ed,
+                      jurisdiction,
+                      incBankHolidays,
+                      holidayTaken
+                    )
                   );
-                  return;
-                } else if (ed - contractHolidayStartPer < 0) {
-                  alert(
-                    "Termination date cannot be before current holiday period start date"
-                  );
-                  return;
-                }
-                const dayMill = 1000 * 24 * 3600;
-
-                let diff = ed - contractHolidayStartPer + dayMill;
-
-                while (diff > dayMill * (365 + leap(contractHolidayStartPer))) {
-                  contractHolidayStartPer +=
-                    dayMill * (365 + leap(contractHolidayStartPer));
-                  diff -= dayMill * (365 + leap(contractHolidayStartPer));
-                }
-
-                setTotHolidays(
-                  calculateTotalHolidays(
+                  const totBankHolidays = calculateNumberOfBankHolidays(
                     contractHolidayStartPer,
                     ed,
-                    jurisdiction,
+                    jurisdiction
+                  );
+                  setBankHolidaysDuringPeriod(totBankHolidays);
+                  const totAccruedRes = calculateAccruedHolidays(
+                    contractHolidayStartPer,
+                    ed,
+                    annualHolidaysAllowance,
+                    holidayTaken,
                     incBankHolidays,
-                    holidayTaken
-                  )
-                );
-                const totBankHolidays = calculateNumberOfBankHolidays(
-                  contractHolidayStartPer,
-                  ed,
-                  jurisdiction
-                );
-                setBankHolidaysDuringPeriod(totBankHolidays);
-                const totAccruedRes = calculateAccruedHolidays(
-                  contractHolidayStartPer,
-                  ed,
-                  annualHolidaysAllowance,
-                  holidayTaken,
-                  incBankHolidays,
-                  jurisdiction,
-                  holidayCarryOver
-                );
-                const accruedThisYear = roundUpAll(
-                  totAccruedRes -
-                    holidayCarryOver +
-                    holidayTaken +
-                    totBankHolidays,
-                  1
-                );
+                    jurisdiction,
+                    holidayCarryOver
+                  );
+                  const accruedThisYear = roundUpAll(
+                    totAccruedRes -
+                      holidayCarryOver +
+                      holidayTaken +
+                      totBankHolidays,
+                    1
+                  );
 
-                setTotAccrued(totAccruedRes);
-                setAccruedThisYear(accruedThisYear);
-                setTotPayout(
-                  calculatePayout(
-                    salary,
-                    salaryBpMap.get(salaryBasis) as number,
-                    daysWorkedPerWeek,
-                    totAccruedRes
-                  )
-                );
+                  setTotAccrued(totAccruedRes);
+                  setAccruedThisYear(accruedThisYear);
+                  setTotPayout(
+                    calculatePayout(
+                      salary,
+                      salaryBpMap.get(salaryBasis) as number,
+                      daysWorkedPerWeek,
+                      totAccruedRes
+                    )
+                  );
 
-                setIsComplete(true);
-              }
+                  setIsComplete(true);
+                }
+              }}
+            >
+              Calculate
+            </button>
+          </div>
+          <div
+            className="flex-child"
+            id="output"
+            style={{
+              visibility: isComplete ? "visible" : "hidden",
+              background: "white",
             }}
           >
-            Calculate
-          </button>
-        </div>
-        <div
-          className="flex-child"
-          id="output"
-          style={{
-            visibility: isComplete ? "visible" : "hidden",
-          }}
-        >
-          <p>
-            Holidays accrued this year: <b>{accruedThisYear}</b>
-          </p>
-          <p>
-            Bank holidays during period: <b>{bankHolidaysDuringPeriod}</b>
-          </p>
-          <p>
-            Total holidays taken: <b>{totHolidays}</b>
-          </p>
-          <p>
-            Accrued holidays remaining:{" "}
-            <b>
-              {totAccrued === undefined
-                ? null
-                : parseFloat((totAccrued as number).toFixed(5))}
-            </b>
-          </p>
+            <p>
+              Holidays accrued this year: <b>{accruedThisYear}</b>
+            </p>
+            <p>
+              Bank holidays during period: <b>{bankHolidaysDuringPeriod}</b>
+            </p>
+            <p>
+              Total holidays taken: <b>{totHolidays}</b>
+            </p>
+            <p>
+              Accrued holidays remaining:{" "}
+              <b>
+                {totAccrued === undefined
+                  ? null
+                  : parseFloat((totAccrued as number).toFixed(5))}
+              </b>
+            </p>
 
-          <p>
-            Employee Payout:<b>{totPayout}</b>{" "}
-          </p>
+            <p>
+              Employee Payout:<b>{totPayout}</b>{" "}
+            </p>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 };
 const calculateTotalHolidays = (
