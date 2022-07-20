@@ -26,10 +26,10 @@ export const AllowanceForm = (): JSX.Element => {
   const [jurisdiction, setJurisdiction] = useState<string>("England & Wales");
   const [annualHolidaysAllowance, setAnnualyHolidaysAllowance] =
     useState<number>(28);
-  const [incBankHolidays, setIncBankHolidays] = useState<boolean>(false);
-  const [holidayCarryOver, setHolidayCarryOver] = useState<number>(2);
+  const [incBankHolidays, setIncBankHolidays] = useState<boolean>(true);
+  const [holidayCarryOver, setHolidayCarryOver] = useState<number>(0);
   const [holidayTaken, setHolidayTaken] = useState<number>(7);
-  const [totHolidays, setTotHolidays] = useState<number | undefined>(0);
+  const [totHolidays, setTotHolidays] = useState<number>(0);
   const [bankHolidaysDuringPeriod, setBankHolidaysDuringPeriod] =
     useState<number>(0);
   const [accruedThisYear, setAccruedThisYear] = useState<number>(0);

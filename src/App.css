@@ -75,6 +75,8 @@ h2{
   border: none;
   font-weight: bold;
   margin-top: 1em;
+  background-color: #3D63F9;
+    color: white;
   }
 
  .buttonRight {
