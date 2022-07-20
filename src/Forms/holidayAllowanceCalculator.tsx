@@ -1,3 +1,4 @@
+import { val } from "cheerio/lib/api/attributes";
 import { is } from "cheerio/lib/api/traversing";
 import { useEffect, useState } from "react";
 import { start } from "repl";
@@ -36,6 +37,7 @@ export const AllowanceForm = (): JSX.Element => {
 
   const [totAccrued, setTotAccrued] = useState<number | undefined>();
   const [totPayout, setTotPayout] = useState<number | string>();
+  const [dailyPay, setDailyPay] = useState<number | string>();
   const [isComplete, setIsComplete] = useState<boolean>(false);
   const submt = () => {
     differenceString(currentHolidayPeriodStartDate, endDate);
@@ -117,7 +119,7 @@ export const AllowanceForm = (): JSX.Element => {
         holidayCarryOver
       );
       const accruedThisYear = roundUpAll(
-        totAccruedRes - holidayCarryOver + holidayTaken + totBankHolidays,
+        totAccruedRes - holidayCarryOver + holidayTaken,
         1
       );
 
@@ -128,10 +130,17 @@ export const AllowanceForm = (): JSX.Element => {
           salary,
           salaryBpMap.get(salaryBasis) as number,
           daysWorkedPerWeek,
-          totAccruedRes
+          totAccruedRes,
+          incBankHolidays,
+          totBankHolidays
         )
       );
-
+      const dPay = calculateDailyPay(
+        salary,
+        salaryBpMap.get(salaryBasis) as number,
+        daysWorkedPerWeek
+      );
+      setDailyPay(dPay);
       setIsComplete(true);
     }
   };
@@ -422,27 +431,120 @@ export const AllowanceForm = (): JSX.Element => {
               background: "white",
             }}
           >
-            <p>
-              Holidays accrued this year: <b>{accruedThisYear}</b>
-            </p>
-            <p>
-              Bank holidays during period: <b>{bankHolidaysDuringPeriod}</b>
-            </p>
-            <p>
-              Total holidays taken: <b>{totHolidays}</b>
-            </p>
-            <p>
-              Accrued holidays remaining:{" "}
-              <b>
-                {totAccrued === undefined
-                  ? null
-                  : parseFloat((totAccrued as number).toFixed(5))}
-              </b>
-            </p>
-
-            <p>
-              Employee Payout:<b>{totPayout}</b>{" "}
-            </p>
+            <b>{}</b>{" "}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                borderBottom: "solid",
+              }}
+            >
+              <div>
+                <p> Holidays accrued this year: </p>
+              </div>
+              <div style={{ marginRight: "20px" }}>
+                <p>
+                  {" "}
+                  <b> {accruedThisYear}</b>
+                </p>
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                borderBottom: "solid",
+              }}
+            >
+              <div>
+                <p> Bank holidays during period: </p>
+              </div>
+              <div style={{ marginRight: "20px" }}>
+                <p>
+                  {" "}
+                  <b> {bankHolidaysDuringPeriod}</b>
+                </p>
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                borderBottom: "solid",
+              }}
+            >
+              <div>
+                <p> Total holidays taken</p>
+              </div>
+              <div style={{ marginRight: "20px" }}>
+                <p>
+                  {" "}
+                  <b> {totHolidays}</b>
+                </p>
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                borderBottom: "solid",
+              }}
+            >
+              <div>
+                <p> Accrued holidays remaining: </p>
+              </div>
+              <div style={{ marginRight: "20px" }}>
+                <p>
+                  {" "}
+                  <b>
+                    {" "}
+                    {totAccrued === undefined
+                      ? null
+                      : roundUpAll(totAccrued as number, 1)}
+                  </b>
+                </p>
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                borderBottom: "solid",
+              }}
+            >
+              <div style={{ marginRight: "20px" }}>
+                <p> Payout per day of holiday: </p>
+              </div>
+              <div style={{ marginRight: "20px" }}>
+                <p>
+                  {" "}
+                  <b> {dailyPay}</b>
+                </p>
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                borderBottom: "solid",
+              }}
+            >
+              <div>
+                <p> Employee Payout: </p>
+              </div>
+              <div style={{ marginRight: "20px" }}>
+                <p>
+                  {" "}
+                  <b> {totPayout}</b>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </form>
@@ -456,10 +558,15 @@ const calculateTotalHolidays = (
   bankHolsIncl: boolean,
   holidaysTaken: number
 ): number => {
-  return (
-    holidaysTaken +
-    calculateNumberOfBankHolidays(startDate, endDate, jurisdiction)
-  );
+  return holidaysTaken;
+};
+const calculateDailyPay = (
+  salary: number,
+  salaryBasis: number,
+  daysWorkedPerWeek: number
+): number => {
+  const pay = (salary * salaryBasis) / (daysWorkedPerWeek * 52);
+  return roundUpAll(pay, 1);
 };
 export const differenceString = (start: string, end: string) => {
   return new Date(end).getTime() - new Date(start).getTime();
@@ -529,17 +636,12 @@ const calculateAccruedHolidays = (
 ): number => {
   const daysWorkedToDate = (end - start) / (3600 * 1000 * 24) + 1;
 
-  const nBankHolidays = calculateNumberOfBankHolidays(start, end, jurisdiction);
-
   return (
     roundUpAll(
-      (daysWorkedToDate / (365 + leap(start))) *
-        (annualHolidayAllowance + (bankHolidaysIncluded ? 0 : nBankHolidays)) +
+      (daysWorkedToDate / (365 + leap(start))) * annualHolidayAllowance +
         carryOver,
       1
-    ) -
-    holidayTaken -
-    nBankHolidays
+    ) - holidayTaken
   );
 };
 
@@ -573,32 +675,43 @@ const calculatePayout = (
   salary: number,
   salaryBasis: number,
   daysWorkedPerWeek: number,
-  accruedHolidayRemaining: number
+  accruedHolidayRemaining: number,
+  incBankHolidays: boolean,
+  numberOfBankingHolidays: number
 ) => {
   const pay =
     ((salary * salaryBasis) / (daysWorkedPerWeek * 52)) *
     accruedHolidayRemaining;
+  // + (incBankHolidays ? 0 : numberOfBankingHolidays)
   return pay < 0
     ? "-£" + currencyFormat(pay).substring(1)
     : "£" + currencyFormat(pay);
 };
 
-export const roundUpAll = (original: number, precision: number) => {
-  const value = original.toFixed(10);
+export const roundUpAll = (original: number, precision: number): number => {
+  const tempOr = original.toString();
 
+  let value;
+  if (tempOr.indexOf(".") == -1) return original;
+  else {
+    value = value = tempOr + "00";
+  }
+  let up = false;
+  for (let i = value.indexOf(".") + 2; i < value.length; i++) {
+    const d = value.charAt(i);
+    if (d != "0") {
+      up = true;
+      break;
+    }
+  }
   const digits = value.split(".")[1];
-  let rounded: number | undefined = undefined;
-
-  const sDigits = digits[1];
-  if (sDigits === "0") {
-    return parseFloat(original.toFixed(1));
-  } else if (digits[0] === "9") {
+  if (up && digits[0] === "9") {
     return Math.round(parseFloat(value));
+  } else if (up) {
+    const dig = (parseInt(digits[0]) + 1).toString();
+    return parseFloat(value.split(".")[0] + "." + dig);
   } else {
-    rounded = parseFloat(
-      value.split(".")[0] + "." + (parseInt(digits[0]) + 1).toString()
-    );
-    return rounded;
+    return original;
   }
 };
 
