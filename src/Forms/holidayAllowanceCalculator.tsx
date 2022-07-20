@@ -431,25 +431,6 @@ export const AllowanceForm = (): JSX.Element => {
               background: "white",
             }}
           >
-            <b>{}</b>{" "}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                borderBottom: "solid",
-              }}
-            >
-              <div>
-                <p> Holidays accrued this year: </p>
-              </div>
-              <div style={{ marginRight: "20px" }}>
-                <p>
-                  {" "}
-                  <b> {accruedThisYear}</b>
-                </p>
-              </div>
-            </div>
             <div
               style={{
                 display: "flex",
@@ -468,6 +449,25 @@ export const AllowanceForm = (): JSX.Element => {
                 </p>
               </div>
             </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                borderBottom: "solid",
+              }}
+            >
+              <div>
+                <p> Holidays accrued this year: </p>
+              </div>
+              <div style={{ marginRight: "20px" }}>
+                <p>
+                  {" "}
+                  <b> {accruedThisYear}</b>
+                </p>
+              </div>
+            </div>
+
             <div
               style={{
                 display: "flex",
@@ -638,13 +638,15 @@ const calculateAccruedHolidays = (
   carryOver: number
 ): number => {
   const daysWorkedToDate = (end - start) / (3600 * 1000 * 24) + 1;
-
+  const nbankHolidays = calculateNumberOfBankHolidays(start, end, jurisdiction);
   return (
     roundUpAll(
       (daysWorkedToDate / (365 + leap(start))) * annualHolidayAllowance +
         carryOver,
       1
-    ) - holidayTaken
+    ) -
+    holidayTaken -
+    (bankHolidaysIncluded ? nbankHolidays : 0)
   );
 };
 
@@ -684,7 +686,7 @@ const calculatePayout = (
 ) => {
   const pay =
     ((salary * salaryBasis) / (daysWorkedPerWeek * 52)) *
-    (accruedHolidayRemaining - (incBankHolidays ? numberOfBankingHolidays : 0));
+    accruedHolidayRemaining;
   return pay < 0
     ? "-£" + currencyFormat(pay).substring(1)
     : "£" + currencyFormat(pay);
