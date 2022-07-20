@@ -532,7 +532,6 @@ export const AllowanceForm = (): JSX.Element => {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-                borderBottom: "solid",
               }}
             >
               <div>
@@ -566,6 +565,7 @@ const calculateDailyPay = (
   daysWorkedPerWeek: number
 ): number => {
   const pay = (salary * salaryBasis) / (daysWorkedPerWeek * 52);
+  console.log(pay);
   return roundUpAll(pay, 1);
 };
 export const differenceString = (start: string, end: string) => {
