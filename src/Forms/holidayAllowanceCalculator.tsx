@@ -681,8 +681,7 @@ const calculatePayout = (
 ) => {
   const pay =
     ((salary * salaryBasis) / (daysWorkedPerWeek * 52)) *
-    accruedHolidayRemaining;
-  // + (incBankHolidays ? 0 : numberOfBankingHolidays)
+    (accruedHolidayRemaining - (incBankHolidays ? numberOfBankingHolidays : 0));
   return pay < 0
     ? "-£" + currencyFormat(pay).substring(1)
     : "£" + currencyFormat(pay);
