@@ -523,7 +523,10 @@ export const AllowanceForm = (): JSX.Element => {
               <div style={{ marginRight: "20px" }}>
                 <p>
                   {" "}
-                  <b> {dailyPay}</b>
+                  <b>
+                    {" "}
+                    {dailyPay ? "£" + currencyFormat(dailyPay as number) : null}
+                  </b>
                 </p>
               </div>
             </div>
@@ -566,7 +569,7 @@ const calculateDailyPay = (
 ): number => {
   const pay = (salary * salaryBasis) / (daysWorkedPerWeek * 52);
 
-  return roundUpAll(pay, 1);
+  return pay;
 };
 export const differenceString = (start: string, end: string) => {
   return new Date(end).getTime() - new Date(start).getTime();
@@ -715,5 +718,17 @@ export const roundUpAll = (original: number, precision: number): number => {
 };
 
 const currencyFormat = (num: number): string => {
-  return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+  const ret = num.toFixed(3);
+  let digit = null;
+  const split = ret.split(".") as Array<string>;
+  if (split[1].charAt(2) != "0") {
+    console.log(split);
+    console.log(split[1].charAt(1));
+    digit = parseInt(split[1].charAt(1)) + 1;
+    const str = parseFloat(split[0] + "." + split[1].charAt(0) + digit);
+
+    return str.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+  } else {
+    return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+  }
 };
