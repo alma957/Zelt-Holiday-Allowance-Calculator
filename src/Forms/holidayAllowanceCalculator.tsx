@@ -123,14 +123,16 @@ export const AllowanceForm = (): JSX.Element => {
         1
       );
 
-      setTotAccrued(totAccruedRes);
+      setTotAccrued(
+        totAccruedRes - (incBankHolidays ? bankHolidaysDuringPeriod : 0)
+      );
       setAccruedThisYear(accruedThisYear);
       setTotPayout(
         calculatePayout(
           salary,
           salaryBpMap.get(salaryBasis) as number,
           daysWorkedPerWeek,
-          totAccruedRes,
+          totAccruedRes - (incBankHolidays ? bankHolidaysDuringPeriod : 0),
           incBankHolidays,
           totBankHolidays
         )
@@ -440,12 +442,12 @@ export const AllowanceForm = (): JSX.Element => {
               }}
             >
               <div>
-                <p> Bank holidays during period: </p>
+                <p> Holidays accrued over the period: </p>
               </div>
               <div style={{ marginRight: "20px" }}>
                 <p>
                   {" "}
-                  <b> {bankHolidaysDuringPeriod}</b>
+                  <b> {accruedThisYear}</b>
                 </p>
               </div>
             </div>
@@ -458,12 +460,12 @@ export const AllowanceForm = (): JSX.Element => {
               }}
             >
               <div>
-                <p> Holidays accrued over the period: </p>
+                <p> Bank holidays during period: </p>
               </div>
               <div style={{ marginRight: "20px" }}>
                 <p>
                   {" "}
-                  <b> {accruedThisYear}</b>
+                  <b> {bankHolidaysDuringPeriod}</b>
                 </p>
               </div>
             </div>
@@ -477,7 +479,11 @@ export const AllowanceForm = (): JSX.Element => {
               }}
             >
               <div>
-                <p> Total holidays taken</p>
+                <p>
+                  {" "}
+                  Total holidays taken{" "}
+                  {incBankHolidays ? "+ Bank Holidays:" : ":"}
+                </p>
               </div>
               <div style={{ marginRight: "20px" }}>
                 <p>
@@ -560,7 +566,12 @@ const calculateTotalHolidays = (
   bankHolsIncl: boolean,
   holidaysTaken: number
 ): number => {
-  return holidaysTaken;
+  return (
+    holidaysTaken +
+    (bankHolsIncl
+      ? calculateNumberOfBankHolidays(startDate, endDate, jurisdiction)
+      : 0)
+  );
 };
 const calculateDailyPay = (
   salary: number,
@@ -644,9 +655,7 @@ const calculateAccruedHolidays = (
       (daysWorkedToDate / (365 + leap(start))) * annualHolidayAllowance +
         carryOver,
       1
-    ) -
-    holidayTaken -
-    (bankHolidaysIncluded ? nbankHolidays : 0)
+    ) - holidayTaken
   );
 };
 
