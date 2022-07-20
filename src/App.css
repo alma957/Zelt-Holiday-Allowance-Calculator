@@ -100,7 +100,7 @@ margin: 0 auto;
  }
 
   .myForm button:hover,button:hover {
-  background: #ccc;
+  background: lightblue;
   cursor: pointer;
   }
 .flex-container {
