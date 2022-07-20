@@ -458,7 +458,7 @@ export const AllowanceForm = (): JSX.Element => {
               }}
             >
               <div>
-                <p> Holidays accrued this year: </p>
+                <p> Holidays accrued over the period: </p>
               </div>
               <div style={{ marginRight: "20px" }}>
                 <p>
