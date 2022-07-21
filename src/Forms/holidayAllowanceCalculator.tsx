@@ -124,7 +124,7 @@ export const AllowanceForm = (): JSX.Element => {
       );
 
       setTotAccrued(
-        totAccruedRes - (incBankHolidays ? bankHolidaysDuringPeriod : 0)
+        totAccruedRes - (!incBankHolidays ? bankHolidaysDuringPeriod : 0)
       );
       setAccruedThisYear(accruedThisYear);
       setTotPayout(
@@ -132,7 +132,7 @@ export const AllowanceForm = (): JSX.Element => {
           salary,
           salaryBpMap.get(salaryBasis) as number,
           daysWorkedPerWeek,
-          totAccruedRes - (incBankHolidays ? bankHolidaysDuringPeriod : 0),
+          totAccruedRes - (!incBankHolidays ? bankHolidaysDuringPeriod : 0),
           incBankHolidays,
           totBankHolidays
         )
@@ -334,7 +334,7 @@ export const AllowanceForm = (): JSX.Element => {
         <h2>Employee Holiday Balance (Termination Year)</h2>
         <p>
           <label>
-            Annual holiday allowance *
+            Annual holiday allowance (add Bank Holidays if applicable) *
             <input
               type="number"
               step="any"
@@ -350,7 +350,7 @@ export const AllowanceForm = (): JSX.Element => {
             />
           </label>
         </p>
-        <legend>Does allowance include Bank Holidays ? *</legend>
+        <legend>Do Bank Holidays contribute towards paid leave ? *</legend>
         <p>
           <label className="choice">
             {" "}
@@ -482,7 +482,7 @@ export const AllowanceForm = (): JSX.Element => {
                 <p>
                   {" "}
                   Total holidays taken{" "}
-                  {incBankHolidays ? "+ Bank Holidays:" : ":"}
+                  {!incBankHolidays ? "+ Bank Holidays:" : ":"}
                 </p>
               </div>
               <div style={{ marginRight: "20px" }}>
@@ -568,7 +568,7 @@ const calculateTotalHolidays = (
 ): number => {
   return (
     holidaysTaken +
-    (bankHolsIncl
+    (!bankHolsIncl
       ? calculateNumberOfBankHolidays(startDate, endDate, jurisdiction)
       : 0)
   );
