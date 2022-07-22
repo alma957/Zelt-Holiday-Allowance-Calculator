@@ -39,6 +39,9 @@ export const AllowanceForm = (): JSX.Element => {
   const [totPayout, setTotPayout] = useState<number | string>();
   const [dailyPay, setDailyPay] = useState<number | string>();
   const [isComplete, setIsComplete] = useState<boolean>(false);
+  const [minimumPay, setMinimumPay] = useState<string>("");
+  const [payoutNumber, setPayoutNumber] = useState<number>(0);
+  const [minimumPayoutNumber, setMinimumPayoutNumber] = useState<number>(0);
   const submt = () => {
     differenceString(currentHolidayPeriodStartDate, endDate);
     if (
@@ -47,12 +50,18 @@ export const AllowanceForm = (): JSX.Element => {
       currentHolidayPeriodStartDate !== "" &&
       salary !== undefined &&
       salaryBasis !== "" &&
-      !isNaN(daysWorkedPerWeek) !== undefined &&
+      !isNaN(daysWorkedPerWeek) &&
+      daysWorkedPerWeek !== undefined &&
+      daysWorkedPerWeek !== null &&
       jurisdiction !== undefined &&
       !isNaN(annualHolidaysAllowance) &&
       incBankHolidays !== undefined &&
       !isNaN(holidayCarryOver) &&
-      !isNaN(holidayTaken)
+      !isNaN(holidayTaken) &&
+      daysWorkedPerWeek > 0 &&
+      daysWorkedPerWeek <= 7 &&
+      salary > 0 &&
+      annualHolidaysAllowance !== -1
     ) {
       if (startPeriodSpecified && currentHolidayPeriodStartDate === "") return;
       const sdSplit = startDate.split("-").map((el) => parseInt(el));
@@ -93,16 +102,15 @@ export const AllowanceForm = (): JSX.Element => {
           dayMill * (365 + leap(contractHolidayStartPer));
         diff -= dayMill * (365 + leap(contractHolidayStartPer));
       }
-
-      setTotHolidays(
-        calculateTotalHolidays(
-          contractHolidayStartPer,
-          ed,
-          jurisdiction,
-          incBankHolidays,
-          holidayTaken
-        )
+      const hol = calculateTotalHolidays(
+        contractHolidayStartPer,
+        ed,
+        jurisdiction,
+        incBankHolidays,
+        holidayTaken
       );
+      setTotHolidays(hol);
+
       const totBankHolidays = calculateNumberOfBankHolidays(
         contractHolidayStartPer,
         ed,
@@ -123,27 +131,43 @@ export const AllowanceForm = (): JSX.Element => {
         1
       );
 
-      setTotAccrued(
-        totAccruedRes - (!incBankHolidays ? bankHolidaysDuringPeriod : 0)
-      );
+      console.log("tot accrued ", totAccruedRes, "tot hol ", hol);
+      const remaining = totAccruedRes - hol + holidayTaken;
+      setTotAccrued(remaining);
       setAccruedThisYear(accruedThisYear);
-      setTotPayout(
-        calculatePayout(
-          salary,
-          salaryBpMap.get(salaryBasis) as number,
-          daysWorkedPerWeek,
-          totAccruedRes - (!incBankHolidays ? bankHolidaysDuringPeriod : 0),
-          incBankHolidays,
-          totBankHolidays
-        )
+      const payouts = calculatePayout(
+        salary,
+        salaryBpMap.get(salaryBasis) as number,
+        daysWorkedPerWeek,
+        remaining,
+        incBankHolidays,
+        totBankHolidays
       );
+      setTotPayout(payouts);
       const dPay = calculateDailyPay(
         salary,
         salaryBpMap.get(salaryBasis) as number,
         daysWorkedPerWeek
       );
+      const payoutUnformatted = payOutUnformatted(
+        salary,
+        salaryBpMap.get(salaryBasis) as number,
+        daysWorkedPerWeek,
+        remaining,
+        incBankHolidays,
+        totBankHolidays
+      );
       setDailyPay(dPay);
       setIsComplete(true);
+      const delta =
+        calculateAnnualHolidaysAllowance(daysWorkedPerWeek) -
+        annualHolidaysAllowance -
+        (incBankHolidays ? bankHolidaysDuringPeriod : 0);
+      console.log("delta ", delta);
+      const minPay = payoutUnformatted + dPay * delta;
+      setMinimumPayoutNumber(minimumPayoutNumber);
+      setPayoutNumber(payoutUnformatted);
+      setMinimumPay(formatCurrenySymbol(minPay));
     }
   };
   useEffect(() => {
@@ -214,13 +238,16 @@ export const AllowanceForm = (): JSX.Element => {
             <input
               type="number"
               min="0"
-              value={salary}
+              value={salary === -1 ? "" : salary}
               step="any"
               onChange={(e) => {
-                if (parseFloat(e.target.value) < 0) {
-                  setGrossSalary(0);
-                } else {
+                if (
+                  parseFloat(e.target.value) >= 0 &&
+                  !isNaN(parseFloat(e.target.value))
+                ) {
                   setGrossSalary(parseFloat(e.target.value));
+                } else {
+                  setGrossSalary(-1);
                 }
               }}
               required
@@ -251,12 +278,23 @@ export const AllowanceForm = (): JSX.Element => {
             Days worked per week *
             <input
               type="number"
-              min="0.1"
+              min="0"
               max="7"
               step="any"
-              value={daysWorkedPerWeek}
+              value={daysWorkedPerWeek === -1 ? "" : daysWorkedPerWeek}
               required
-              onChange={(e) => setDaysWorkedPerWeek(parseFloat(e.target.value))}
+              onChange={(e) => {
+                console.log("holaaaaa ", e.target.value);
+                console.log("ype ", typeof e.target.value);
+                if (
+                  parseFloat(e.target.value) <= 7 ||
+                  parseFloat(e.target.value) >= 0
+                ) {
+                  setDaysWorkedPerWeek(parseFloat(e.target.value));
+                } else {
+                  setDaysWorkedPerWeek(-1);
+                }
+              }}
             />
           </label>
         </p>
@@ -334,23 +372,34 @@ export const AllowanceForm = (): JSX.Element => {
         <h2>Employee Holiday Balance (Termination Year)</h2>
         <p>
           <label>
-            Annual holiday allowance (add Bank Holidays if applicable) *
+            Annual holiday allowance *{" "}
+            <span style={{ color: "red" }}>
+              {annualHolidaysAllowance +
+                (incBankHolidays ? bankHolidaysDuringPeriod : 0) <
+              calculateAnnualHolidaysAllowance(daysWorkedPerWeek)
+                ? `This is below the statutory minimum of ${calculateAnnualHolidaysAllowance(
+                    daysWorkedPerWeek
+                  )}`
+                : ""}
+            </span>{" "}
             <input
               type="number"
               step="any"
               min="0"
-              value={annualHolidaysAllowance}
-              onChange={(e) =>
-                parseFloat(e.target.value) < 0
-                  ? ""
-                  : setAnnualyHolidaysAllowance(parseFloat(e.target.value))
+              value={
+                annualHolidaysAllowance === -1 ? "" : annualHolidaysAllowance
               }
+              onChange={(e) => {
+                if (parseFloat(e.target.value) >= 0)
+                  setAnnualyHolidaysAllowance(parseFloat(e.target.value));
+                else setAnnualyHolidaysAllowance(-1);
+              }}
               required
               // oninput="validity.valid||(value='');"
             />
           </label>
         </p>
-        <legend>Do Bank Holidays contribute towards paid leave ? *</legend>
+        <legend>Do you need to add Bank Holidays on top ? *</legend>
         <p>
           <label className="choice">
             {" "}
@@ -479,11 +528,7 @@ export const AllowanceForm = (): JSX.Element => {
               }}
             >
               <div>
-                <p>
-                  {" "}
-                  Total holidays taken{" "}
-                  {!incBankHolidays ? "+ Bank Holidays:" : ":"}
-                </p>
+                <p> Total holidays taken + Bank Holidays </p>
               </div>
               <div style={{ marginRight: "20px" }}>
                 <p>
@@ -541,6 +586,7 @@ export const AllowanceForm = (): JSX.Element => {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
+                borderBottom: "solid",
               }}
             >
               <div>
@@ -550,6 +596,34 @@ export const AllowanceForm = (): JSX.Element => {
                 <p>
                   {" "}
                   <b> {totPayout}</b>
+                </p>
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <div>
+                <p> Statutory Employee Payout: </p>
+              </div>
+              <div style={{ marginRight: "20px" }}>
+                <p>
+                  {" "}
+                  <b
+                    style={{
+                      color:
+                        annualHolidaysAllowance +
+                          (incBankHolidays ? bankHolidaysDuringPeriod : 0) <
+                        calculateAnnualHolidaysAllowance(daysWorkedPerWeek)
+                          ? `red`
+                          : "green",
+                    }}
+                  >
+                    {minimumPay}
+                  </b>
                 </p>
               </div>
             </div>
@@ -568,9 +642,7 @@ const calculateTotalHolidays = (
 ): number => {
   return (
     holidaysTaken +
-    (!bankHolsIncl
-      ? calculateNumberOfBankHolidays(startDate, endDate, jurisdiction)
-      : 0)
+    calculateNumberOfBankHolidays(startDate, endDate, jurisdiction)
   );
 };
 const calculateDailyPay = (
@@ -652,7 +724,8 @@ const calculateAccruedHolidays = (
   const nbankHolidays = calculateNumberOfBankHolidays(start, end, jurisdiction);
   return (
     roundUpAll(
-      (daysWorkedToDate / (365 + leap(start))) * annualHolidayAllowance +
+      (daysWorkedToDate / (365 + leap(start))) *
+        (annualHolidayAllowance + (bankHolidaysIncluded ? nbankHolidays : 0)) +
         carryOver,
       1
     ) - holidayTaken
@@ -700,7 +773,24 @@ const calculatePayout = (
     ? "-£" + currencyFormat(pay).substring(1)
     : "£" + currencyFormat(pay);
 };
-
+const formatCurrenySymbol = (n: number) => {
+  return n < 0
+    ? "-£" + currencyFormat(n).substring(1)
+    : "£" + currencyFormat(n);
+};
+const payOutUnformatted = (
+  salary: number,
+  salaryBasis: number,
+  daysWorkedPerWeek: number,
+  accruedHolidayRemaining: number,
+  incBankHolidays: boolean,
+  numberOfBankingHolidays: number
+) => {
+  const pay =
+    ((salary * salaryBasis) / (daysWorkedPerWeek * 52)) *
+    accruedHolidayRemaining;
+  return pay;
+};
 export const roundUpAll = (original: number, precision: number): number => {
   const tempOr = original.toString();
 
@@ -733,8 +823,6 @@ const currencyFormat = (num: number): string => {
   let digit = null;
   const split = ret.split(".") as Array<string>;
   if (split[1].charAt(2) != "0") {
-    console.log(split);
-    console.log(split[1].charAt(1));
     digit = parseInt(split[1].charAt(1)) + 1;
     const str = parseFloat(split[0] + "." + split[1].charAt(0) + digit);
 
