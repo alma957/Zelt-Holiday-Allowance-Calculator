@@ -158,7 +158,7 @@ export const AllowanceForm = (): JSX.Element => {
         totBankHolidays
       );
       setDailyPay(dPay);
-      setIsComplete(true);
+
       const delta =
         calculateAnnualHolidaysAllowance(daysWorkedPerWeek) -
         annualHolidaysAllowance -
@@ -186,9 +186,12 @@ export const AllowanceForm = (): JSX.Element => {
         incBankHolidays,
         bankHolidaysDuringPeriod
       );
+
       setMinimumPayoutNumber(minPay);
       setPayoutNumber(payOutUnf);
       setMinimumPay(formatCurrenySymbol(minPay));
+      setIsComplete(true);
+    } else {
     }
   };
   useEffect(() => {
@@ -255,7 +258,10 @@ export const AllowanceForm = (): JSX.Element => {
         </p>
         <p>
           <label>
-            Gross Salary *
+            Gross Salary *{" "}
+            <span style={{ color: "red" }}>
+              {salary === -1 ? "Please insert the salary" : ""}
+            </span>
             <input
               type="number"
               min="0"
@@ -277,7 +283,7 @@ export const AllowanceForm = (): JSX.Element => {
         </p>
         <p>
           <label>
-            Salary Basis *
+            Salary Basis *{" "}
             <select
               value={salaryBasis}
               onChange={(e) => {
@@ -296,7 +302,12 @@ export const AllowanceForm = (): JSX.Element => {
         </p>
         <p>
           <label>
-            Days worked per week *
+            Days worked per week *{" "}
+            <span style={{ color: "red" }}>
+              {daysWorkedPerWeek == -1 || daysWorkedPerWeek > 7
+                ? "Please insert a valid number of days"
+                : ""}
+            </span>
             <input
               type="number"
               min="0"
