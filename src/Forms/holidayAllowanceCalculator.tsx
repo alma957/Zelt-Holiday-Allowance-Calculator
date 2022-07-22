@@ -1,7 +1,4 @@
-import { val } from "cheerio/lib/api/attributes";
-import { is } from "cheerio/lib/api/traversing";
 import { useEffect, useState } from "react";
-import { start } from "repl";
 
 import {
   englandBkHol,
@@ -31,8 +28,7 @@ export const AllowanceForm = (): JSX.Element => {
   const [holidayCarryOver, setHolidayCarryOver] = useState<number>(0);
   const [holidayTaken, setHolidayTaken] = useState<number>(7);
   const [totHolidays, setTotHolidays] = useState<number>(0);
-  const [bankHolidaysDuringPeriod, setBankHolidaysDuringPeriod] =
-    useState<number>(0);
+
   const [accruedThisYear, setAccruedThisYear] = useState<number>(0);
 
   const [totAccrued, setTotAccrued] = useState<number | undefined>();
@@ -260,7 +256,7 @@ export const AllowanceForm = (): JSX.Element => {
           <label>
             Days worked per week *{" "}
             <span style={{ color: "red" }}>
-              {daysWorkedPerWeek == -1 || daysWorkedPerWeek > 7
+              {daysWorkedPerWeek === -1 || daysWorkedPerWeek > 7
                 ? "Please insert a valid number of days"
                 : ""}
             </span>
@@ -360,8 +356,7 @@ export const AllowanceForm = (): JSX.Element => {
           <label>
             Annual holiday allowance *{" "}
             <span style={{ color: "red" }}>
-              {annualHolidaysAllowance +
-                (incBankHolidays ? bankHolidaysDuringPeriod : 0) <
+              {annualHolidaysAllowance <
               calculateAnnualHolidaysAllowance(daysWorkedPerWeek)
                 ? `This is below the statutory minimum of ${calculateAnnualHolidaysAllowance(
                     daysWorkedPerWeek
@@ -657,7 +652,7 @@ export const leap = (start: number): number => {
   const startDay = startDate.getDate();
   let subLeap = 0;
 
-  if (leapYear(startYear) && startMonth == 1 && startDay === 29) {
+  if (leapYear(startYear) && startMonth === 1 && startDay === 29) {
     subLeap = 1;
   }
 
@@ -741,14 +736,14 @@ export const roundUpAll = (original: number, precision: number): number => {
   const tempOr = original.toString();
 
   let value;
-  if (tempOr.indexOf(".") == -1) return original;
+  if (tempOr.indexOf(".") === -1) return original;
   else {
     value = value = tempOr + "00";
   }
   let up = false;
   for (let i = value.indexOf(".") + 2; i < value.length; i++) {
     const d = value.charAt(i);
-    if (d != "0") {
+    if (d !== "0") {
       up = true;
       break;
     }
@@ -770,12 +765,12 @@ export const roundUpAllCurrency = (original: number): number => {
   let digit = parseInt(split[1].charAt(1));
 
   if (
-    split[1].charAt(2) == "9" &&
-    split[1].charAt(1) == "9" &&
-    split[1].charAt(0) == "9"
+    split[1].charAt(2) === "9" &&
+    split[1].charAt(1) === "9" &&
+    split[1].charAt(0) === "9"
   )
     return Math.round(original);
-  else if (split[1].charAt(2) == "9" && split[1].charAt(1) == "9")
+  else if (split[1].charAt(2) === "9" && split[1].charAt(1) === "9")
     return parseFloat(
       split[0] + "." + (parseInt(split[0].charAt(0)) + 1).toString() + "0"
     );
@@ -787,7 +782,7 @@ const currencyFormat = (num: number): string => {
   const ret = num.toFixed(3);
   let digit = null;
   const split = ret.split(".") as Array<string>;
-  if (split[1].charAt(2) != "0") {
+  if (split[1].charAt(2) !== "0") {
     digit = parseInt(split[1].charAt(1)) + 1;
     const str = parseFloat(split[0] + "." + split[1].charAt(0) + digit);
 
