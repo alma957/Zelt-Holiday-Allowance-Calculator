@@ -523,7 +523,7 @@ export const AllowanceForm = (): JSX.Element => {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-                borderBottom: "solid 1px",
+                borderBottom: "solid",
               }}
             >
               <div>
