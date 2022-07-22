@@ -526,7 +526,7 @@ export const AllowanceForm = (): JSX.Element => {
                   {" "}
                   Holidays taken {incBankHolidays
                     ? " + Bank Holidays"
-                    : ""}{" "}
+                    : ":"}{" "}
                 </p>
               </div>
               <div style={{ marginRight: "20px" }}>
@@ -638,12 +638,7 @@ export const calculateAnnualHolidaysAllowance = (
 ): number => {
   return roundUpAll(Math.min(28, 5.6 * daysWorkedPerWeek), 1);
 };
-export const calculateAnnualCarryOver = (
-  allowance: number,
-  maxCarry: number
-): number => {
-  return roundUpAll(Math.min(maxCarry, (1.6 / 5.6) * allowance), 1);
-};
+
 export const leap = (start: number): number => {
   const startDate = new Date(start);
 
