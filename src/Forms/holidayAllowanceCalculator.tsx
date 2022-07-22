@@ -357,7 +357,8 @@ export const AllowanceForm = (): JSX.Element => {
             Annual holiday allowance *{" "}
             <span style={{ color: "red" }}>
               {annualHolidaysAllowance <
-              calculateAnnualHolidaysAllowance(daysWorkedPerWeek)
+                calculateAnnualHolidaysAllowance(daysWorkedPerWeek) &&
+              incBankHolidays
                 ? `This is below the statutory minimum of ${calculateAnnualHolidaysAllowance(
                     daysWorkedPerWeek
                   )}`
