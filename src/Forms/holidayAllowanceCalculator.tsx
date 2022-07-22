@@ -420,7 +420,9 @@ export const AllowanceForm = (): JSX.Element => {
             />
           </label>
         </p>
-        <legend>Do you need to add Bank Holidays on top ? *</legend>
+        <legend>
+          Do you need to add Bank Holidays to your annual allowance ? *
+        </legend>
         <p>
           <label className="choice">
             {" "}
