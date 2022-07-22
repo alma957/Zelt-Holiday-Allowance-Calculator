@@ -131,7 +131,6 @@ export const AllowanceForm = (): JSX.Element => {
         1
       );
 
-      console.log("tot accrued ", totAccruedRes, "tot hol ", hol);
       const remaining = totAccruedRes - hol + holidayTaken;
       setTotAccrued(remaining);
       setAccruedThisYear(accruedThisYear);
@@ -159,13 +158,6 @@ export const AllowanceForm = (): JSX.Element => {
       );
       setDailyPay(dPay);
 
-      const delta =
-        calculateAnnualHolidaysAllowance(daysWorkedPerWeek) -
-        annualHolidaysAllowance -
-        (incBankHolidays ? bankHolidaysDuringPeriod : 0);
-
-      console.log("delta ", delta);
-
       const minPayAccrued = calculateAccruedHolidays(
         contractHolidayStartPer,
         ed,
@@ -177,7 +169,6 @@ export const AllowanceForm = (): JSX.Element => {
         holidayCarryOver
       );
 
-      console.log("min pay accrued ", minPayAccrued);
       const minPay = payOutUnformatted(
         salary,
         salaryBpMap.get(salaryBasis) as number,
@@ -316,8 +307,6 @@ export const AllowanceForm = (): JSX.Element => {
               value={daysWorkedPerWeek === -1 ? "" : daysWorkedPerWeek}
               required
               onChange={(e) => {
-                console.log("holaaaaa ", e.target.value);
-                console.log("ype ", typeof e.target.value);
                 if (
                   parseFloat(e.target.value) <= 7 ||
                   parseFloat(e.target.value) >= 0
