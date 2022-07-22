@@ -149,7 +149,7 @@ export const AllowanceForm = (): JSX.Element => {
         salaryBpMap.get(salaryBasis) as number,
         daysWorkedPerWeek
       );
-      const payoutUnformatted = payOutUnformatted(
+      const payOutUnf = payOutUnformatted(
         salary,
         salaryBpMap.get(salaryBasis) as number,
         daysWorkedPerWeek,
@@ -163,10 +163,31 @@ export const AllowanceForm = (): JSX.Element => {
         calculateAnnualHolidaysAllowance(daysWorkedPerWeek) -
         annualHolidaysAllowance -
         (incBankHolidays ? bankHolidaysDuringPeriod : 0);
+
       console.log("delta ", delta);
-      const minPay = payoutUnformatted + dPay * delta;
-      setMinimumPayoutNumber(minimumPayoutNumber);
-      setPayoutNumber(payoutUnformatted);
+
+      const minPayAccrued = calculateAccruedHolidays(
+        contractHolidayStartPer,
+        ed,
+        calculateAnnualHolidaysAllowance(daysWorkedPerWeek) -
+          (incBankHolidays ? bankHolidaysDuringPeriod : 0),
+        holidayTaken,
+        incBankHolidays,
+        jurisdiction,
+        holidayCarryOver
+      );
+
+      console.log("min pay accrued ", minPayAccrued);
+      const minPay = payOutUnformatted(
+        salary,
+        salaryBpMap.get(salaryBasis) as number,
+        daysWorkedPerWeek,
+        minPayAccrued - bankHolidaysDuringPeriod,
+        incBankHolidays,
+        bankHolidaysDuringPeriod
+      );
+      setMinimumPayoutNumber(minPay);
+      setPayoutNumber(payOutUnf);
       setMinimumPay(formatCurrenySymbol(minPay));
     }
   };
