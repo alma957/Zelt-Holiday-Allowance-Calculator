@@ -381,7 +381,7 @@ export const AllowanceForm = (): JSX.Element => {
             />
           </label>
         </p>
-        <legend>Does your allowance include Bank Holidays ? *</legend>
+        <legend>Does your allowance include bank holidays? *</legend>
         <p>
           <label className="choice">
             {" "}
@@ -434,7 +434,7 @@ export const AllowanceForm = (): JSX.Element => {
         </p>
         <p>
           <label>
-            Holidays taken this year (excluding Bank Holidays) *
+            Holidays taken this year (excluding bank holidays) *
             <input
               type="number"
               min="0"
@@ -498,7 +498,7 @@ export const AllowanceForm = (): JSX.Element => {
             </div>
             <div
               style={{
-                display: "flex",
+                display: adjustment === 0 ? "none" : "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
               }}
@@ -525,9 +525,8 @@ export const AllowanceForm = (): JSX.Element => {
               <div>
                 <p>
                   {" "}
-                  Holidays taken {incBankHolidays
-                    ? " + Bank Holidays"
-                    : ":"}{" "}
+                  Holidays taken{incBankHolidays ? " + bank holidays" : ""}
+                  {":"}
                 </p>
               </div>
               <div style={{ marginRight: "20px" }}>
