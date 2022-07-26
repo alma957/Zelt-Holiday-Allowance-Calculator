@@ -1,5 +1,5 @@
 import "./App.css";
-import { AllowanceForm } from "./Forms/holidayAllowanceCalculator";
+import {AllowanceForm} from "./Forms/holidayAllowanceCalculator";
 
 function App() {
   return (
@@ -10,3 +10,4 @@ function App() {
 }
 
 export default App;
+
