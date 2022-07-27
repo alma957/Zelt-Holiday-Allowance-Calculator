@@ -800,12 +800,3 @@ export const currencyFormat = (num: number): string => {
     return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   }
 };
-const test = () => {
-  console.log(currencyFormat(99.12));
-  console.log(currencyFormat(99.183));
-  console.log(currencyFormat(99.18));
-  console.log(currencyFormat(99.99));
-  console.log(currencyFormat(99.91));
-  console.log(currencyFormat(99.991));
-};
-test();
