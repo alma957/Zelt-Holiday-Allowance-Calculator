@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 
 import {
   englandBkHol,
@@ -60,14 +60,14 @@ export const AllowanceForm = (): JSX.Element => {
       annualHolidaysAllowance !== -1
     ) {
       if (startPeriodSpecified && currentHolidayPeriodStartDate === "") return;
-      const sdSplit = startDate.split("-").map((el) => parseInt(el));
+      const sdSplit = startDate.split("-").map(el => parseInt(el));
       const sd = new Date(sdSplit[0], sdSplit[1] - 1, sdSplit[2]);
-      const edSplit = endDate.split("-").map((el) => parseInt(el));
+      const edSplit = endDate.split("-").map(el => parseInt(el));
 
       const ed = new Date(edSplit[0], edSplit[1] - 1, edSplit[2]).getTime();
 
       const contractHolidayStartPeriodSplit = startPeriodSpecified
-        ? currentHolidayPeriodStartDate!.split("-").map((el) => parseInt(el))
+        ? currentHolidayPeriodStartDate!.split("-").map(el => parseInt(el))
         : null;
 
       let contractHolidayStartPer = new Date(
@@ -169,7 +169,7 @@ export const AllowanceForm = (): JSX.Element => {
       <form
         className="myForm"
         id="form"
-        onSubmit={(e) => {
+        onSubmit={e => {
           e.preventDefault();
         }}
       >
@@ -192,7 +192,7 @@ export const AllowanceForm = (): JSX.Element => {
             <input
               type="date"
               value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
+              onChange={e => setStartDate(e.target.value)}
               required
             />
           </label>
@@ -203,7 +203,7 @@ export const AllowanceForm = (): JSX.Element => {
             <input
               type="date"
               value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
+              onChange={e => setEndDate(e.target.value)}
               required
             />
           </label>
@@ -211,7 +211,7 @@ export const AllowanceForm = (): JSX.Element => {
         <p>
           <label>
             Gross Salary *{" "}
-            <span style={{ color: "red" }}>
+            <span style={{color: "red"}}>
               {salary === -1 ? "Please insert the salary" : ""}
             </span>
             <input
@@ -219,7 +219,7 @@ export const AllowanceForm = (): JSX.Element => {
               min="0"
               value={salary === -1 ? "" : salary}
               step="any"
-              onChange={(e) => {
+              onChange={e => {
                 if (
                   parseFloat(e.target.value) >= 0 &&
                   !isNaN(parseFloat(e.target.value))
@@ -238,7 +238,7 @@ export const AllowanceForm = (): JSX.Element => {
             Salary Basis *{" "}
             <select
               value={salaryBasis}
-              onChange={(e) => {
+              onChange={e => {
                 setSalaryBasis(e.target.value);
               }}
               //defaultValue={"Annually"}
@@ -255,7 +255,7 @@ export const AllowanceForm = (): JSX.Element => {
         <p>
           <label>
             Days worked per week *{" "}
-            <span style={{ color: "red" }}>
+            <span style={{color: "red"}}>
               {daysWorkedPerWeek === -1 || daysWorkedPerWeek > 7
                 ? "Please insert a valid number of days"
                 : ""}
@@ -267,7 +267,7 @@ export const AllowanceForm = (): JSX.Element => {
               step="any"
               value={daysWorkedPerWeek === -1 ? "" : daysWorkedPerWeek}
               required
-              onChange={(e) => {
+              onChange={e => {
                 if (
                   parseFloat(e.target.value) <= 7 ||
                   parseFloat(e.target.value) >= 0
@@ -287,7 +287,7 @@ export const AllowanceForm = (): JSX.Element => {
             <input
               type="radio"
               checked={startPeriodSpecified}
-              onChange={(e) =>
+              onChange={e =>
                 e.target.checked
                   ? setStartPeriodSpecified(true)
                   : setStartPeriodSpecified(false)
@@ -303,7 +303,7 @@ export const AllowanceForm = (): JSX.Element => {
             <input
               type="radio"
               checked={!startPeriodSpecified}
-              onChange={(e) =>
+              onChange={e =>
                 e.target.checked
                   ? setStartPeriodSpecified(false)
                   : setStartPeriodSpecified(true)
@@ -326,13 +326,13 @@ export const AllowanceForm = (): JSX.Element => {
           Start date must be before end date
         </div>
         <p>
-          <label style={{ display: startPeriodSpecified ? "inline" : "none" }}>
+          <label style={{display: startPeriodSpecified ? "inline" : "none"}}>
             Holiday year start
             <input
               type="date"
               value={currentHolidayPeriodStartDate}
               required={startPeriodSpecified ? true : false}
-              onChange={(e) => setcurrentHolidayPeriodStartDate(e.target.value)}
+              onChange={e => setcurrentHolidayPeriodStartDate(e.target.value)}
             />
           </label>
         </p>
@@ -341,7 +341,7 @@ export const AllowanceForm = (): JSX.Element => {
             Jurisdiction *
             <select
               value={jurisdiction}
-              onChange={(e) => setJurisdiction(e.target.value)}
+              onChange={e => setJurisdiction(e.target.value)}
               required
               defaultValue={"England & Wales"}
             >
@@ -355,7 +355,7 @@ export const AllowanceForm = (): JSX.Element => {
         <p>
           <label>
             Annual holiday allowance *{" "}
-            <span style={{ color: "red" }}>
+            <span style={{color: "red"}}>
               {annualHolidaysAllowance <
                 calculateAnnualHolidaysAllowance(daysWorkedPerWeek) &&
               incBankHolidays
@@ -371,7 +371,7 @@ export const AllowanceForm = (): JSX.Element => {
               value={
                 annualHolidaysAllowance === -1 ? "" : annualHolidaysAllowance
               }
-              onChange={(e) => {
+              onChange={e => {
                 if (parseFloat(e.target.value) >= 0)
                   setAnnualyHolidaysAllowance(parseFloat(e.target.value));
                 else setAnnualyHolidaysAllowance(-1);
@@ -388,7 +388,7 @@ export const AllowanceForm = (): JSX.Element => {
             <input
               type="radio"
               checked={incBankHolidays}
-              onChange={(e) => {
+              onChange={e => {
                 e.target.checked
                   ? setIncBankHolidays(true)
                   : setIncBankHolidays(false);
@@ -404,7 +404,7 @@ export const AllowanceForm = (): JSX.Element => {
             <input
               type="radio"
               checked={!incBankHolidays}
-              onChange={(e) => {
+              onChange={e => {
                 e.target.checked
                   ? setIncBankHolidays(false)
                   : setIncBankHolidays(true);
@@ -422,7 +422,7 @@ export const AllowanceForm = (): JSX.Element => {
               min="0"
               step="any"
               value={holidayCarryOver}
-              onChange={(e) =>
+              onChange={e =>
                 parseFloat(e.target.value) < 0
                   ? setHolidayCarryOver(0)
                   : setHolidayCarryOver(parseFloat(e.target.value))
@@ -440,7 +440,7 @@ export const AllowanceForm = (): JSX.Element => {
               min="0"
               value={holidayTaken}
               step="any"
-              onChange={(e) =>
+              onChange={e =>
                 parseFloat(e.target.value) < 0
                   ? setHolidayTaken(0)
                   : setHolidayTaken(parseFloat(e.target.value))
@@ -450,7 +450,7 @@ export const AllowanceForm = (): JSX.Element => {
             />
           </label>
         </p>
-        <div className="flex-container" style={{ width: "103%" }}>
+        <div className="flex-container" style={{width: "103%"}}>
           <div
             className="flex-child"
             id="output"
@@ -472,7 +472,7 @@ export const AllowanceForm = (): JSX.Element => {
               <div>
                 <p> Holidays accrued over the period: </p>
               </div>
-              <div style={{ marginRight: "20px" }}>
+              <div style={{marginRight: "20px"}}>
                 <p>
                   {" "}
                   <b> + {accruedThisYear}</b>
@@ -489,7 +489,7 @@ export const AllowanceForm = (): JSX.Element => {
               <div>
                 <p> Holidays carried over: </p>
               </div>
-              <div style={{ marginRight: "20px" }}>
+              <div style={{marginRight: "20px"}}>
                 <p>
                   {" "}
                   <b> + {holidayCarryOver}</b>
@@ -506,7 +506,7 @@ export const AllowanceForm = (): JSX.Element => {
               <div>
                 <p> Statutory leave adjustment: </p>
               </div>
-              <div style={{ marginRight: "20px" }}>
+              <div style={{marginRight: "20px"}}>
                 <p>
                   {" "}
                   <b> + {adjustment}</b>
@@ -529,7 +529,7 @@ export const AllowanceForm = (): JSX.Element => {
                   {":"}
                 </p>
               </div>
-              <div style={{ marginRight: "20px" }}>
+              <div style={{marginRight: "20px"}}>
                 <p>
                   {" "}
                   <b> - {totHolidays}</b>
@@ -546,7 +546,7 @@ export const AllowanceForm = (): JSX.Element => {
               <div>
                 <p> Accrued holidays remaining: </p>
               </div>
-              <div style={{ marginRight: "20px" }}>
+              <div style={{marginRight: "20px"}}>
                 <p>
                   {" "}
                   <b>
@@ -566,10 +566,10 @@ export const AllowanceForm = (): JSX.Element => {
                 borderBottom: "solid",
               }}
             >
-              <div style={{ marginRight: "20px" }}>
+              <div style={{marginRight: "20px"}}>
                 <p> Payout per day of holiday: </p>
               </div>
-              <div style={{ marginRight: "20px" }}>
+              <div style={{marginRight: "20px"}}>
                 <p>
                   {" "}
                   <b>
@@ -589,7 +589,7 @@ export const AllowanceForm = (): JSX.Element => {
               <div>
                 <p> Employee Payout: </p>
               </div>
-              <div style={{ marginRight: "20px" }}>
+              <div style={{marginRight: "20px"}}>
                 <p>
                   {" "}
                   <b>
@@ -705,13 +705,13 @@ const calculateNumberOfBankHolidays = (
   let bankHolidaysMill: Array<number> = [];
   switch (jurisdiction) {
     case "England & Wales":
-      bankHolidaysMill = englandBkHol.map((el) => new Date(el).getTime());
+      bankHolidaysMill = englandBkHol.map(el => new Date(el).getTime());
       break;
     case "Scotland":
-      bankHolidaysMill = scotlandBankHol.map((el) => new Date(el).getTime());
+      bankHolidaysMill = scotlandBankHol.map(el => new Date(el).getTime());
       break;
     case "Northern Ireland":
-      bankHolidaysMill = northIrBankHol.map((el) => new Date(el).getTime());
+      bankHolidaysMill = northIrBankHol.map(el => new Date(el).getTime());
       break;
   }
 
@@ -760,7 +760,7 @@ export const roundUpAllCurrency = (original: number): number => {
   let digit = parseInt(split[1].charAt(1));
 
   if (
-    split[1].charAt(2) === "9" &&
+    split[1].charAt(2) !== "0" &&
     split[1].charAt(1) === "9" &&
     split[1].charAt(0) === "9"
   )
@@ -773,16 +773,39 @@ export const roundUpAllCurrency = (original: number): number => {
   return parseFloat(split[0] + "." + split[1].charAt(0) + digit);
 };
 
-const currencyFormat = (num: number): string => {
+export const currencyFormat = (num: number): string => {
   const ret = num.toFixed(3);
   let digit = null;
   const split = ret.split(".") as Array<string>;
   if (split[1].charAt(2) !== "0") {
     digit = parseInt(split[1].charAt(1)) + 1;
-    const str = parseFloat(split[0] + "." + split[1].charAt(0) + digit);
+
+    let firstDig =
+      digit === 10
+        ? parseInt(split[1].charAt(0)) + 1
+        : parseInt(split[1].charAt(0));
+    if (firstDig === 10 && digit == 10)
+      return Math.round(num)
+        .toFixed(2)
+        .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+    if (firstDig == 10) firstDig = 0;
+    if (digit == 10) digit = 0;
+
+    const str = parseFloat(
+      split[0] + "." + firstDig.toString() + digit.toString()
+    );
 
     return str.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   } else {
     return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   }
 };
+const test = () => {
+  console.log(currencyFormat(99.12));
+  console.log(currencyFormat(99.183));
+  console.log(currencyFormat(99.18));
+  console.log(currencyFormat(99.99));
+  console.log(currencyFormat(99.91));
+  console.log(currencyFormat(99.991));
+};
+test();
