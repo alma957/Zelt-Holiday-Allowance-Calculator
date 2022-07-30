@@ -6,6 +6,7 @@ import {
   northIrBankHol,
   salaryBpMap,
 } from "./variables";
+import {Box,TextField,Paper, Select, MenuItem, FormControl, InputLabel, FormGroup, Switch} from "@mui/material"
 export const AllowanceForm = (): JSX.Element => {
   const defDate = new Date(new Date().getFullYear(), 0, 1)
     .toISOString()
@@ -146,6 +147,7 @@ export const AllowanceForm = (): JSX.Element => {
       setIsComplete(true);
     }
   };
+  const st = {marginTop: "20px", background: "white"};
   useEffect(() => {
     submt();
 
@@ -165,19 +167,15 @@ export const AllowanceForm = (): JSX.Element => {
     holidayTaken,
   ]);
   return (
-    <div>
-      <form
-        className="myForm"
-        id="form"
-        onSubmit={e => {
-          e.preventDefault();
-        }}
+    <Box>
+      <Paper
+       style={{"backgroundColor":"#F2F2F7",marginLeft:"1%"}}
       >
-        <div className="flex-container">
+        <Box className="flex-container">
           <h2>Employment Details</h2>
-        </div>
+        </Box>
 
-        <div
+        <Box
           style={{
             color: "red",
             display:
@@ -185,40 +183,47 @@ export const AllowanceForm = (): JSX.Element => {
           }}
         >
           Start date must be before end date
-        </div>
+        </Box>
         <p>
-          <label>
-            Employment start date *
-            <input
+         
+            
+            <TextField
               type="date"
               value={startDate}
               onChange={e => setStartDate(e.target.value)}
+              variant="outlined"
               required
+              InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"}}}
+              label="Employment start date"
+              style={{background:"white",width:"50%"}}
             />
-          </label>
+ 
         </p>
         <p>
-          <label>
-            Employment termination date *
-            <input
+          
+           
+            <TextField
               type="date"
               value={endDate}
               onChange={e => setEndDate(e.target.value)}
               required
+              InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"}}}
+              label="Employment termination date"
+              style={{background:"white",width:"50%"}}
             />
-          </label>
+        
         </p>
         <p>
-          <label>
-            Gross Salary *{" "}
-            <span style={{color: "red"}}>
-              {salary === -1 ? "Please insert the salary" : ""}
-            </span>
-            <input
+          
+           {" "}
+           
+            <TextField
               type="number"
-              min="0"
+              InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"}}}
               value={salary === -1 ? "" : salary}
-              step="any"
+              style={{background:"white",width:"50%"}}
+              inputProps={{min:0}}
+              label="Gross Salary"
               onChange={e => {
                 if (
                   parseFloat(e.target.value) >= 0 &&
@@ -229,44 +234,49 @@ export const AllowanceForm = (): JSX.Element => {
                   setGrossSalary(-1);
                 }
               }}
+              helperText={salary === -1 ? "Please insert the salary" : ""}
+              FormHelperTextProps={{style:{color:"red"}}}
               required
             />
-          </label>
+         
         </p>
         <p>
-          <label>
-            Salary Basis *{" "}
-            <select
+        <FormControl  style={{background:"white",width:"50%"}}>
+        <InputLabel style={{ color: "black",fontWeight:"bold",fontSize:"95%"}}>
+          Salary Basis
+        </InputLabel>
+            <Select
+             
               value={salaryBasis}
               onChange={e => {
                 setSalaryBasis(e.target.value);
               }}
               //defaultValue={"Annually"}
-
+              label="Salary Basis"
               required
             >
-              <option value="Annually">Annually</option>
-              <option value="Monthly">Monthly</option>
-              <option value="Weekly">Weekly</option>
-              <option value="Daily">Daily</option>
-            </select>
-          </label>
+              <MenuItem value="Annually">Annually</MenuItem>
+              <MenuItem value="Monthly">Monthly</MenuItem>
+              <MenuItem value="Weekly">Weekly</MenuItem>
+              <MenuItem value="Daily">Daily</MenuItem>
+            </Select>
+            </FormControl>
+  
         </p>
         <p>
-          <label>
-            Days worked per week *{" "}
-            <span style={{color: "red"}}>
-              {daysWorkedPerWeek === -1 || daysWorkedPerWeek > 7
-                ? "Please insert a valid number of days"
-                : ""}
-            </span>
-            <input
+
+            <TextField
               type="number"
-              min="0"
-              max="7"
-              step="any"
+              label="Days worked per week"
+              InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"}}}
+              style={{background:"white",width:"50%"}}
+              inputProps={{max:7,min:0}}
               value={daysWorkedPerWeek === -1 ? "" : daysWorkedPerWeek}
               required
+              helperText={salary === -1 ?  daysWorkedPerWeek === -1 || daysWorkedPerWeek > 7
+                ? "Please insert a valid number of days"
+                : "" : ""}
+              FormHelperTextProps={{style:{color:"red"}}}
               onChange={e => {
                 if (
                   parseFloat(e.target.value) <= 7 ||
@@ -278,42 +288,22 @@ export const AllowanceForm = (): JSX.Element => {
                 }
               }}
             />
-          </label>
+        
         </p>
-        <legend>Holiday period start date specified in contract *</legend>
-        <p>
-          <label className="choice">
-            {" "}
-            <input
-              type="radio"
-              checked={startPeriodSpecified}
-              onChange={e =>
-                e.target.checked
-                  ? setStartPeriodSpecified(true)
-                  : setStartPeriodSpecified(false)
-              }
-              required
-            />{" "}
-            Yes{" "}
-          </label>
-        </p>
-        <p>
-          <label className="choice">
-            {" "}
-            <input
-              type="radio"
-              checked={!startPeriodSpecified}
-              onChange={e =>
-                e.target.checked
-                  ? setStartPeriodSpecified(false)
-                  : setStartPeriodSpecified(true)
-              }
-              required
-            />{" "}
-            No{" "}
-          </label>
-        </p>
-        <div
+        <FormGroup>
+        <InputLabel style={{color:"black",fontWeight:"bold"}}>
+        Holiday period start date specified in contract
+        </InputLabel>
+        <Switch
+          onChange={e => {
+            setStartPeriodSpecified(e.target.checked)
+          }
+        }
+        />
+        </FormGroup>
+
+     
+        <Box
           style={{
             color: "red",
             display:
@@ -324,50 +314,56 @@ export const AllowanceForm = (): JSX.Element => {
           }}
         >
           Start date must be before end date
-        </div>
+        </Box>
         <p>
-          <label style={{display: startPeriodSpecified ? "inline" : "none"}}>
-            Holiday year start
-            <input
+        
+            <TextField
+             InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"}}}
               type="date"
+              label="Holiday year start"
               value={currentHolidayPeriodStartDate}
               required={startPeriodSpecified ? true : false}
               onChange={e => setcurrentHolidayPeriodStartDate(e.target.value)}
+              style={{background:"white",width:"50%"}}
             />
-          </label>
+
         </p>
         <p>
-          <label>
-            Jurisdiction *
-            <select
+        <FormControl  style={{background:"white",width:"50%"}}>
+        <InputLabel style={{ color: "black",fontWeight:"bold",fontSize:"95%"}}>
+        Jurisdiction
+        </InputLabel>
+       
+            <Select
               value={jurisdiction}
               onChange={e => setJurisdiction(e.target.value)}
               required
               defaultValue={"England & Wales"}
             >
-              <option value="England & Wales">England & Wales</option>
-              <option value="Scotland">Scotland</option>
-              <option value="Northern Ireland">Northern Ireland</option>
-            </select>
-          </label>
+              <MenuItem value="England & Wales">England & Wales</MenuItem>
+              <MenuItem value="Scotland">Scotland</MenuItem>
+              <MenuItem value="Northern Ireland">Northern Ireland</MenuItem>
+            </Select>
+            </FormControl>
+       
         </p>
         <h2>Employee Holiday Balance (Termination Year)</h2>
         <p>
-          <label>
-            Annual holiday allowance *{" "}
-            <span style={{color: "red"}}>
-              {annualHolidaysAllowance <
+        
+   
+            <TextField
+             InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"}}}
+              type="number"
+              label="Annual holiday allowance"
+              style={{background:"white",width:"50%"}}
+              helperText={annualHolidaysAllowance <
                 calculateAnnualHolidaysAllowance(daysWorkedPerWeek) &&
               incBankHolidays
                 ? `This is below the statutory minimum of ${calculateAnnualHolidaysAllowance(
                     daysWorkedPerWeek
                   )}`
                 : ""}
-            </span>{" "}
-            <input
-              type="number"
-              step="any"
-              min="0"
+              inputProps={{min:0}}
               value={
                 annualHolidaysAllowance === -1 ? "" : annualHolidaysAllowance
               }
@@ -379,48 +375,30 @@ export const AllowanceForm = (): JSX.Element => {
               required
               // oninput="validity.valid||(value='');"
             />
-          </label>
+
         </p>
-        <legend>Does your allowance include bank holidays? *</legend>
+        <FormGroup>
+        <InputLabel style={{color:"black",fontWeight:"bold"}}>
+        Does your allowance include bank holidays?
+        </InputLabel>
+        <Switch
+          onChange={e => {
+            setIncBankHolidays(e.target.checked)
+          }
+        }
+        />
+        </FormGroup>
+       
+
         <p>
-          <label className="choice">
-            {" "}
-            <input
-              type="radio"
-              checked={incBankHolidays}
-              onChange={e => {
-                e.target.checked
-                  ? setIncBankHolidays(true)
-                  : setIncBankHolidays(false);
-              }}
-              required
-            />{" "}
-            Yes{" "}
-          </label>
-        </p>
-        <p>
-          <label className="choice">
-            {" "}
-            <input
-              type="radio"
-              checked={!incBankHolidays}
-              onChange={e => {
-                e.target.checked
-                  ? setIncBankHolidays(false)
-                  : setIncBankHolidays(true);
-              }}
-              required
-            />{" "}
-            No{" "}
-          </label>
-        </p>
-        <p>
-          <label>
-            Carry over from last year *
-            <input
+
+            <TextField
+             InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"}}}
               type="number"
-              min="0"
-              step="any"
+              label="Carry over from last year"
+              style={{background:"white",width:"50%"}}
+      
+              inputProps={{min:0}}
               value={holidayCarryOver}
               onChange={e =>
                 parseFloat(e.target.value) < 0
@@ -430,16 +408,19 @@ export const AllowanceForm = (): JSX.Element => {
               required
               // oninput="validity.valid||(value='');"
             />
-          </label>
+
         </p>
         <p>
-          <label>
-            Holidays taken this year (excluding bank holidays) *
-            <input
+
+            <TextField
               type="number"
-              min="0"
+              InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"}}}
+              style={{background:"white",width:"50%"}}
+      
+              label=" Holidays taken this year (excluding bank holidays)"
+              inputProps={{min:0}}
               value={holidayTaken}
-              step="any"
+              
               onChange={e =>
                 parseFloat(e.target.value) < 0
                   ? setHolidayTaken(0)
@@ -448,10 +429,10 @@ export const AllowanceForm = (): JSX.Element => {
               required
               // oninput="validity.valid||(value='');"
             />
-          </label>
+
         </p>
-        <div className="flex-container" style={{width: "103%"}}>
-          <div
+        <Box className="flex-container" style={{width: "51%"}}>
+          <Box
             className="flex-child"
             id="output"
             style={{
@@ -462,59 +443,59 @@ export const AllowanceForm = (): JSX.Element => {
               width: "100px",
             }}
           >
-            <div
+            <Box
               style={{
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
               }}
             >
-              <div>
+              <Box>
                 <p> Holidays accrued over the period: </p>
-              </div>
-              <div style={{marginRight: "20px"}}>
+              </Box>
+              <Box style={{marginRight: "20px"}}>
                 <p>
                   {" "}
                   <b> + {accruedThisYear}</b>
                 </p>
-              </div>
-            </div>
-            <div
+              </Box>
+            </Box>
+            <Box
               style={{
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
               }}
             >
-              <div>
+              <Box>
                 <p> Holidays carried over: </p>
-              </div>
-              <div style={{marginRight: "20px"}}>
+              </Box>
+              <Box style={{marginRight: "20px"}}>
                 <p>
                   {" "}
                   <b> + {holidayCarryOver}</b>
                 </p>
-              </div>
-            </div>
-            <div
+              </Box>
+            </Box>
+            <Box
               style={{
                 display: adjustment === 0 ? "none" : "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
               }}
             >
-              <div>
+              <Box>
                 <p> Statutory leave adjustment: </p>
-              </div>
-              <div style={{marginRight: "20px"}}>
+              </Box>
+              <Box style={{marginRight: "20px"}}>
                 <p>
                   {" "}
                   <b> + {adjustment}</b>
                 </p>
-              </div>
-            </div>
+              </Box>
+            </Box>
 
-            <div
+            <Box
               style={{
                 display: "flex",
                 flexDirection: "row",
@@ -522,31 +503,31 @@ export const AllowanceForm = (): JSX.Element => {
                 borderBottom: "solid",
               }}
             >
-              <div>
+              <Box>
                 <p>
                   {" "}
                   Holidays taken{incBankHolidays ? " + bank holidays" : ""}
                   {":"}
                 </p>
-              </div>
-              <div style={{marginRight: "20px"}}>
+              </Box>
+              <Box style={{marginRight: "20px"}}>
                 <p>
                   {" "}
                   <b> - {totHolidays}</b>
                 </p>
-              </div>
-            </div>
-            <div
+              </Box>
+            </Box>
+            <Box
               style={{
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
               }}
             >
-              <div>
+              <Box>
                 <p> Accrued holidays remaining: </p>
-              </div>
-              <div style={{marginRight: "20px"}}>
+              </Box>
+              <Box style={{marginRight: "20px"}}>
                 <p>
                   {" "}
                   <b>
@@ -556,9 +537,9 @@ export const AllowanceForm = (): JSX.Element => {
                       : roundUpAll(totAccrued as number, 1)}
                   </b>
                 </p>
-              </div>
-            </div>
-            <div
+              </Box>
+            </Box>
+            <Box
               style={{
                 display: "flex",
                 flexDirection: "row",
@@ -566,10 +547,10 @@ export const AllowanceForm = (): JSX.Element => {
                 borderBottom: "solid",
               }}
             >
-              <div style={{marginRight: "20px"}}>
+              <Box style={{marginRight: "20px"}}>
                 <p> Payout per day of holiday: </p>
-              </div>
-              <div style={{marginRight: "20px"}}>
+              </Box>
+              <Box style={{marginRight: "20px"}}>
                 <p>
                   {" "}
                   <b>
@@ -577,19 +558,19 @@ export const AllowanceForm = (): JSX.Element => {
                     {dailyPay ? "£" + currencyFormat(dailyPay as number) : null}
                   </b>
                 </p>
-              </div>
-            </div>
-            <div
+              </Box>
+            </Box>
+            <Box
               style={{
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
               }}
             >
-              <div>
+              <Box>
                 <p> Employee Payout: </p>
-              </div>
-              <div style={{marginRight: "20px"}}>
+              </Box>
+              <Box style={{marginRight: "20px"}}>
                 <p>
                   {" "}
                   <b>
@@ -599,12 +580,12 @@ export const AllowanceForm = (): JSX.Element => {
                       : ""}
                   </b>
                 </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+      </Paper>
+    </Box>
   );
 };
 const calculateTotalHolidays = (
@@ -733,7 +714,7 @@ export const roundUpAll = (original: number, precision: number): number => {
   let value;
   if (tempOr.indexOf(".") === -1) return original;
   else {
-    value = value = tempOr + "00";
+    value = tempOr + "00";
   }
   let up = false;
   for (let i = value.indexOf(".") + 2; i < value.length; i++) {
