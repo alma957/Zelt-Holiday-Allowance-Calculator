@@ -176,7 +176,7 @@ export const AllowanceForm = (): JSX.Element => {
   return (
     <Box>
       <Paper
-       style={{"backgroundColor":"#F2F2F7",padding:"5px"}}
+       style={{"backgroundColor":"#F2F2F7",padding:"5px",width:"96%"}}
       >
         
           <h2 style={{textAlign:"left",display:"flex",justifyContent:"center",marginBottom:"30px"}}>Employment Details</h2>
