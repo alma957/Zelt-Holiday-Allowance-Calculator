@@ -166,14 +166,21 @@ export const AllowanceForm = (): JSX.Element => {
     holidayCarryOver,
     holidayTaken,
   ]);
+  const errorStyle = {
+    color: "red",
+    background: "#F2F2F7",
+    marginLeft: "0",
+    marginTop: "0",
+    width: "100%",
+  };
   return (
     <Box>
       <Paper
-       style={{"backgroundColor":"#F2F2F7",marginLeft:"1%"}}
+       style={{"backgroundColor":"#F2F2F7",marginLeft:"33%",width:"40%"}}
       >
-        <Box className="flex-container">
-          <h2>Employment Details</h2>
-        </Box>
+        
+          <h2 style={{textAlign:"left",display:"flex",justifyContent:"center",marginBottom:"30px"}}>Employment Details</h2>
+      
 
         <Box
           style={{
@@ -191,11 +198,11 @@ export const AllowanceForm = (): JSX.Element => {
               type="date"
               value={startDate}
               onChange={e => setStartDate(e.target.value)}
-              variant="outlined"
+            
               required
-              InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"}}}
+              InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"},shrink: true}}
               label="Employment start date"
-              style={{background:"white",width:"50%"}}
+              style={{background:"white",width:"100%"}}
             />
  
         </p>
@@ -207,9 +214,9 @@ export const AllowanceForm = (): JSX.Element => {
               value={endDate}
               onChange={e => setEndDate(e.target.value)}
               required
-              InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"}}}
+              InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"},shrink: true}}
               label="Employment termination date"
-              style={{background:"white",width:"50%"}}
+              style={{background:"white",width:"100%"}}
             />
         
         </p>
@@ -219,9 +226,9 @@ export const AllowanceForm = (): JSX.Element => {
            
             <TextField
               type="number"
-              InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"}}}
+              InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"},shrink: true}}
               value={salary === -1 ? "" : salary}
-              style={{background:"white",width:"50%"}}
+              style={{background:"white",width:"100%"}}
               inputProps={{min:0}}
               label="Gross Salary"
               onChange={e => {
@@ -235,13 +242,13 @@ export const AllowanceForm = (): JSX.Element => {
                 }
               }}
               helperText={salary === -1 ? "Please insert the salary" : ""}
-              FormHelperTextProps={{style:{color:"red"}}}
+              FormHelperTextProps={{style:errorStyle}}
               required
             />
          
         </p>
         <p>
-        <FormControl  style={{background:"white",width:"50%"}}>
+        <FormControl  style={{background:"white",width:"100%"}}>
         <InputLabel style={{ color: "black",fontWeight:"bold",fontSize:"95%"}}>
           Salary Basis
         </InputLabel>
@@ -268,15 +275,15 @@ export const AllowanceForm = (): JSX.Element => {
             <TextField
               type="number"
               label="Days worked per week"
-              InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"}}}
-              style={{background:"white",width:"50%"}}
+              InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"},shrink: true}}
+              style={{background:"white",width:"100%"}}
               inputProps={{max:7,min:0}}
               value={daysWorkedPerWeek === -1 ? "" : daysWorkedPerWeek}
               required
               helperText={salary === -1 ?  daysWorkedPerWeek === -1 || daysWorkedPerWeek > 7
                 ? "Please insert a valid number of days"
                 : "" : ""}
-              FormHelperTextProps={{style:{color:"red"}}}
+              FormHelperTextProps={{style:errorStyle}}
               onChange={e => {
                 if (
                   parseFloat(e.target.value) <= 7 ||
@@ -318,18 +325,18 @@ export const AllowanceForm = (): JSX.Element => {
         <p>
         
             <TextField
-             InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"}}}
+             InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"},shrink: true}}
               type="date"
               label="Holiday year start"
               value={currentHolidayPeriodStartDate}
               required={startPeriodSpecified ? true : false}
               onChange={e => setcurrentHolidayPeriodStartDate(e.target.value)}
-              style={{background:"white",width:"50%"}}
+              style={{background:"white",width:"100%"}}
             />
 
         </p>
         <p>
-        <FormControl  style={{background:"white",width:"50%"}}>
+        <FormControl  style={{background:"white",width:"100%"}}>
         <InputLabel style={{ color: "black",fontWeight:"bold",fontSize:"95%"}}>
         Jurisdiction
         </InputLabel>
@@ -338,6 +345,7 @@ export const AllowanceForm = (): JSX.Element => {
               value={jurisdiction}
               onChange={e => setJurisdiction(e.target.value)}
               required
+              label="Jurisdiction"
               defaultValue={"England & Wales"}
             >
               <MenuItem value="England & Wales">England & Wales</MenuItem>
@@ -347,15 +355,16 @@ export const AllowanceForm = (): JSX.Element => {
             </FormControl>
        
         </p>
-        <h2>Employee Holiday Balance (Termination Year)</h2>
+        <h2 style={{textAlign:"left",display:"flex",justifyContent:"center",marginBottom:"30px"}}>Employee holiday balance</h2>
+      
         <p>
         
    
             <TextField
-             InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"}}}
+             InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"},shrink: true}}
               type="number"
               label="Annual holiday allowance"
-              style={{background:"white",width:"50%"}}
+              style={{background:"white",width:"100%"}}
               helperText={annualHolidaysAllowance <
                 calculateAnnualHolidaysAllowance(daysWorkedPerWeek) &&
               incBankHolidays
@@ -367,6 +376,7 @@ export const AllowanceForm = (): JSX.Element => {
               value={
                 annualHolidaysAllowance === -1 ? "" : annualHolidaysAllowance
               }
+              FormHelperTextProps={{style:errorStyle}}
               onChange={e => {
                 if (parseFloat(e.target.value) >= 0)
                   setAnnualyHolidaysAllowance(parseFloat(e.target.value));
@@ -393,10 +403,10 @@ export const AllowanceForm = (): JSX.Element => {
         <p>
 
             <TextField
-             InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"}}}
+             InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"},shrink: true}}
               type="number"
               label="Carry over from last year"
-              style={{background:"white",width:"50%"}}
+              style={{background:"white",width:"100%"}}
       
               inputProps={{min:0}}
               value={holidayCarryOver}
@@ -414,8 +424,8 @@ export const AllowanceForm = (): JSX.Element => {
 
             <TextField
               type="number"
-              InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"}}}
-              style={{background:"white",width:"50%"}}
+              InputLabelProps={{style:{fontWeight:"bold",color:"black",fontSize:"95%"},shrink: true}}
+              style={{background:"white",width:"100%"}}
       
               label=" Holidays taken this year (excluding bank holidays)"
               inputProps={{min:0}}
@@ -431,7 +441,7 @@ export const AllowanceForm = (): JSX.Element => {
             />
 
         </p>
-        <Box className="flex-container" style={{width: "51%"}}>
+        <Box className="flex-container" style={{width: "100%"}}>
           <Box
             className="flex-child"
             id="output"
