@@ -441,7 +441,7 @@ export const AllowanceForm = (): JSX.Element => {
             />
 
         </p>
-        <Box className="flex-container" style={{width: "100%"}}>
+        <Box className="flex-container" style={{width:"101%"}} >
           <Box
             className="flex-child"
             id="output"
